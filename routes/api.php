@@ -29,11 +29,13 @@ Route::controller(AuthController::class)->group(function(){
     Route::post("/editor-login", "editor_login");
     Route::post("/admin-register", "admin_register");
     Route::post("/admin-login", "admin_login");
+    Route::post("/social-media", "social_media");
 });
 
 
 
-Route::middleware('auth:sanctum')->group( function(){
+Route::middleware(['auth:sanctum', 'writer'])->group( function(){
+    //writers
     Route::get('/hello', [AuthController::class, 'postcreate']);
 
    });
