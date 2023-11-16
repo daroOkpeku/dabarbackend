@@ -35,7 +35,7 @@ Route::controller(AuthController::class)->group(function(){
 
 
 Route::middleware(['auth:sanctum', 'writer'])->group( function(){
-    //writers
+    //  /api/writers/url
     Route::get('/hello', [AuthController::class, 'postcreate']);
 
    });

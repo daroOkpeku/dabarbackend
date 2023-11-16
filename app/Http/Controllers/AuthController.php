@@ -30,7 +30,6 @@ class AuthController extends Controller
     }
 
     public function login(loginreq $request){
-
       $user = User::where(['email'=>$request->email])->first();
       if($user && Hash::check($request->password, $user->password)){
         $token =  $user->createToken('my-app-token')->plainTextToken;
@@ -55,14 +54,6 @@ class AuthController extends Controller
         'role'=>'editor',
        ]);
        event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
-
-    //    sociallink::create([
-    //     'twitter'=>$request->twitter,
-    //     'instagram'=>$request->instagram,
-    //     'linkedin'=>$request->linkedin,
-    //     'user_id'=>$user->id
-    //    ]);
-
        return response()->json(['status'=>200, 'success'=>'you have successfully registered']);
     }
 
@@ -82,7 +73,6 @@ class AuthController extends Controller
 
 
     public function admin_register(registerreq $request){
-
         $user =  User::create([
             'firstname'=>$request->firstname,
             'lastname'=>$request->lastname,
@@ -93,13 +83,6 @@ class AuthController extends Controller
             'role'=>'admin',
            ]);
            event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
-           //    sociallink::create([
-        //     'twitter'=>$request->twitter,
-        //     'instagram'=>$request->instagram,
-        //     'linkedin'=>$request->linkedin,
-        //     'user_id'=>$user->id
-        //    ]);
-
            return response()->json(['status'=>200, 'success'=>'you have successfully registered']);
     }
 
@@ -121,21 +104,17 @@ class AuthController extends Controller
 
 
     public function social_media(socialreq $request){
-
        $user = User::where(['email'=>$request->email, 'verification_code'=>$request->code])->first();
         if(!$user){
            $user->status = 1;
            $user->save();
-
              sociallink::create([
             'twitter'=>$request->twitter,
             'instagram'=>$request->instagram,
             'linkedin'=>$request->linkedin,
             'user_id'=>$user->id
            ]);
-
            return response()->json(['success'=>200, 'message'=>'you have inserted your social media links'], 200);
-
         }else{
             return response()->json(['error'=>403, 'message'=>'please verifield your email']);
         }
@@ -147,7 +126,7 @@ class AuthController extends Controller
             if(Gate::allows("check-user", auth()->user())){
                 return response()->json('hello');
              }else{
-                return response()->json('you cant');
+                return response()->json('you can\'t');
                }
         } catch (\Throwable $th) {
             return response()->json('you cant');
