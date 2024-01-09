@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\emailevent;
+use App\Events\roleevent;
 use App\Http\Requests\contactreq;
+use App\Http\Requests\editusersreq;
 use App\Http\Requests\loginreq;
 use App\Http\Requests\registerreq;
 use App\Http\Requests\socialreq;
+use App\Http\Requests\writereditorreq;
 use App\Models\Contact;
 use App\Models\Post;
 use App\Models\sociallink;
@@ -18,19 +21,38 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
-    public function register(registerreq $request){
+    public function register(writereditorreq $request){
+    if(Gate::allows("check-admin", auth()->user())){
       $user = User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
         'email'=>$request->email,
         "verification_code"=>sha1(time()),
         'status'=>0,
-        'password'=>$request->password,
+      //  'password'=>$request->password,
         'role'=>'writer',
        ]);
-       event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
+      event(new roleevent($user->firstname, $user->lastname, $user->email, $user->verification_code, $user->role));
        return response()->json(['success'=>'you have registered']);
+    }else{
+        return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
     }
+    }
+
+
+    public function role_confirm ($email, $verification_code, $role){
+          $user = User::where(['email'=>$email, "verification_code"=>$verification_code, 'role'=>$role])->first();
+          if($user){
+            $user->update([
+                'status'=>1,
+            ]);
+            return response()->json(["success"=>200, "message"=>"your account has been verifield"]);
+          }else{
+            return response()->json(['status'=>500, 'error'=>'are you sure you are passing the correct values']);
+          }
+    }
+
+
 
     public function login(loginreq $request){
       $user = User::where(['email'=>$request->email])->first();
@@ -47,17 +69,22 @@ class AuthController extends Controller
 
 
     public function editor_register(registerreq $request){
+    if(Gate::allows("check-admin", auth()->user())){
      $user =  User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
         'email'=>$request->email,
         "verification_code"=>sha1(time()),
         'status'=>0,
-        'password'=>$request->password,
+        // 'password'=>$request->password,
         'role'=>'editor',
        ]);
-       event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
+    //    event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
        return response()->json(['status'=>200, 'success'=>'you have successfully registered']);
+    }else{
+        return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+
+    }
     }
 
     public function editor_login(loginreq $request){
@@ -158,5 +185,59 @@ class AuthController extends Controller
         ]);
         return response()->json(["status"=>200, 'message'=>"we have seen your message and we get back to you soon"],200);
     }
+
+    public function single_editor($id, User $user){
+        if(Gate::allows("check-admin", auth()->user())){
+          $user->find_single($user, $id);
+        }else{
+            return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+        }
+    }
+
+
+
+    public function edit_editor(editusersreq $request, User $user){
+        if(Gate::allows("check-admin", auth()->user())){
+     $userinfo = $user->where(['role'=>'editor', 'id'=>$request->id])->first();
+     $user->editfun($userinfo, $request->firstname, $request->lastname, $request->email, $request->role);
+    }else{
+        return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+    }
+    }
+
+    public function edit_writer(editusersreq $request, User $user){
+        if(Gate::allows("check-admin", auth()->user())){
+            $userinfo = $user->where(['role'=>'writer', 'id'=>$request->id])->first();
+            $user->editfun($userinfo, $request->firstname, $request->lastname, $request->email, $request->role);
+           }else{
+               return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+           }
+         }
+
+         public function single_writer($id, User $user){
+            if(Gate::allows("check-admin", auth()->user())){
+                $user->find_single($user, $id);
+            }else{
+                return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+            }
+        }
+
+        public function delete_writer($id, User $user){
+            if(Gate::allows("check-admin", auth()->user())){
+            $userinfo = $user->where(['role'=>'writer', 'id'=>$id])->first();
+            return response()->json(['status'=>200, "success"=>$userinfo]);
+            }else{
+                return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+            }
+        }
+
+        public function delete_editor($id, User $user){
+            if(Gate::allows("check-admin", auth()->user())){
+                $userinfo = $user->where(['role'=>'editor', 'id'=>$id])->first();
+                return response()->json(['status'=>200, "success"=>$userinfo]);
+                }else{
+                    return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
+                }
+        }
 
 }

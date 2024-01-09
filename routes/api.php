@@ -33,6 +33,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::post("/admin-login", "admin_login");
     Route::post("/social-media", "social_media");
     Route::post("/contact", "contact");
+    Route::put("/role_confirm/{email}/{verification_code}/{role}",  "role_confirm");
 });
 
 Route::controller(PostController::class)->group(function(){
@@ -60,6 +61,8 @@ Route::middleware(['auth:sanctum', 'writer'])->group( function(){
         Route::post("/createstory", "createstory");
     });
 
+
+
    });
 
 
@@ -79,4 +82,14 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::post("/tendingstories", "tendingstories");
         Route::post("/populastories", "populastories");
        });
+
+
+       Route::controller(AuthController::class)->group(function(){
+        Route::put("/edit_editor", "edit_editor");
+        Route::put("/edit_writer", "edit_writer");
+        Route::get("/single_editor/{id}", "single_editor");
+        Route::get("/single_writer/{id}", "single_editor");
+        Route::delete("/delete_writer/{id}", "delete_writer");
+        Route::delete("/delete_editor/{id}", "delete_editor");
+    });
    });
