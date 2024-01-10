@@ -6,7 +6,7 @@ class StoreTrait{
    public function hello($model, $stories_id, $type){
 
     try {
-        $tending = $model->where(["stories_id"=>$stories_id])->first();
+        $tending = $model->where(["stories_id"=>$stories_id, 'status'=>1])->first();
         if(!$tending){
             $model->create([
              "stories_id" => $stories_id

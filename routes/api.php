@@ -39,6 +39,7 @@ Route::controller(AuthController::class)->group(function(){
 Route::controller(PostController::class)->group(function(){
     Route::get("/cryptoapimrk", "cryptoapi");
     Route::post("/subscribe", "subscribe");
+    Route::get("/mediadata", "mediadata");
 });
 
 // Route::get("/cryptoapimrk", [PostController::class, 'cryptoapi']);
@@ -71,6 +72,7 @@ Route::middleware(['auth:sanctum', 'editor'])->prefix('editor')->group(function 
         Route::post("/createstory", "createstory");
         Route::put("/editstory", "editstory");
         Route::delete("/deletestory", "deletestory");
+        Route::get('/dashbordata', 'dashbordata');
     });
 
 });
@@ -85,6 +87,8 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::post("/featuredstories", "featuredstories");
         Route::post("/tendingstories", "tendingstories");
         Route::post("/populastories", "populastories");
+        Route::get('/dashbordata', 'dashbordata');
+        Route::post("/mediainsert", 'mediainsert');
        });
 
 

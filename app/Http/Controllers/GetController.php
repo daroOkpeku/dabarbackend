@@ -8,6 +8,7 @@ use App\Models\popular;
 use App\Models\Stories;
 use App\Models\Subscribe;
 use App\Models\tending;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,29 +33,34 @@ class GetController extends Controller
     }
 
     public function singlestory(Request $request){
-        $story = Stories::where(["id", $request->id])->first();
-        $clientIp = $request->header('x-real-ip') ?: $request->ip();
-        $ip = ipadress::where('ip', $clientIp)->first();
-        if($story && $ip){
-           $ans = $story->no_time_viewed + 1;
-           $story->no_time_viewed =  $ans;
-           $story->save();
-           return response()->json(['success'=>$story]);
+        try {
+            $story = Stories::where(["id", $request->id])->first();
+            $todaytime =  CarbonImmutable::now();
+            $schedule = CarbonImmutable::parse($story->schedule_story_time);
+            $clientIp = $request->header('x-real-ip') ?: $request->ip();
+            $ip = ipadress::where('ip', $clientIp)->first();
+            if($story->status == 1){
+              $ans = $story->no_time_viewed + 1;
+              $story->no_time_viewed =  $ans;
+               $story->save();
+                 return response()->json(['success'=>200, 'message'=>$story]);
+            }else{
+           if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0){
+            $ans = $story->no_time_viewed + 1;
+            $story->no_time_viewed =  $ans;
+            $story->status = 1;
+             $story->save();
+             return response()->json(['success'=>200, 'message'=>$story]);
+            }else{
+                return response()->json(['success'=>200, 'message'=>'you cant view this stort now']);
+            }
+            }
+
+        } catch (\Throwable $th) {
+            return response()->json(['success'=>403, 'message'=>'this id does nt exist']);
+
         }
-        // else{
-        //     $ans = $story->no_time_viewed + 1;
-        //     DB::transaction(function() use($clientIp, $story, $ans){
-        //         ipadress::create([
-        //             'ip'=>$clientIp,
-        //              'is_status'=>0,
-        //      ]);
 
-        //      $story->no_time_viewed =  $ans;
-        //      $story->save();
-
-        //     });
-
-        // }
     }
 
 

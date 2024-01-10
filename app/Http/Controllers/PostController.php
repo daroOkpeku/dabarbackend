@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\createstoryreq;
 use App\Http\Requests\deletestoryreq;
+use App\Http\Requests\mediarequest;
 use App\Http\Requests\storyidreq;
 use App\Http\Requests\subscribereq;
+use App\Http\Resources\dashbordresource;
 use App\Models\featured;
+use App\Models\Media;
 use App\Models\popular;
 use App\Models\Stories;
 use App\Models\Subscribe;
 use App\Models\tending;
 use App\Models\topstories;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -44,6 +48,8 @@ class PostController extends Controller
            return response()->json(['error'=>'you are not a writer']);
         }
       }
+
+
 
 
       public function editstory(createstoryreq $request){
@@ -90,6 +96,15 @@ class PostController extends Controller
 
         }
 
+      }
+
+
+      public function dashbordata(){
+         $data = array(
+            "stories"=>count(Stories::all()),
+            'users'=>count(User::all())
+         );
+         return response()->json(['success'=>200, "message"=>$data]);
       }
 
 
@@ -146,4 +161,24 @@ class PostController extends Controller
         // subscribes
         return response()->json(["success"=>"you have subscribed"],200);
         }
+
+        public function mediainsert(mediarequest $request){
+        if(Gate::allows("check-admin", auth()->user())){
+            $media = new Media();
+            $media->name = $request->name;
+            $media->alter_text = $request->alter_text;
+            $media->file = $request->file;
+            $media->save();
+           return response()->json(['success'=>200, 'message'=>'your file has been saved']);
+            }
+        }
+
+
+        public function mediadata($page){
+            $media =  Media::all();
+            $ans = intval($page);
+            $pagdata =  $this->paginate($media, 8, $ans);
+            return response()->json(['success'=>$pagdata]);
+        }
+
 }
