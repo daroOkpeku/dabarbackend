@@ -54,21 +54,25 @@ Route::get("/downloadsubscribe", "downloadsubscribe");
 });
 
 
-Route::middleware(['auth:sanctum', 'writer'])->group( function(){
-    //  /api/writers/url
-    Route::get('/hello', [AuthController::class, 'postcreate']);
-    Route::controller(PostController::class)->group(function(){
-        Route::post("/createstory", "createstory");
-    });
-
-
-
-   });
+// Route::middleware(['auth:sanctum', 'writer'])->group( function(){
+//     //  /api/writers/url
+//     Route::get('/hello', [AuthController::class, 'postcreate']);
+//     // Route::controller(PostController::class)->group(function(){
+//     //     Route::post("/createstory", "createstory");
+//     // });
+//    });
 
 
 Route::middleware(['auth:sanctum', 'editor'])->prefix('editor')->group(function () {
  //  /api/editor/url
     // Other routes go here
+
+    Route::controller(PostController::class)->group(function(){
+        Route::post("/createstory", "createstory");
+        Route::put("/editstory", "editstory");
+        Route::delete("/deletestory", "deletestory");
+    });
+
 });
 
 // 'admin'

@@ -26,6 +26,8 @@ return new class extends Migration
             $table->mediumText('summary')->nullable();
             $table->longText("body")->nullable();
             $table->tinyText('no_time_viewed')->nullable();
+            $table->timestamp('schedule_story_time')->nullable();
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

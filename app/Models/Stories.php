@@ -30,6 +30,8 @@ class Stories extends Model
          'summary',
          'body',
          'sub_categories_id',
-         'no_time_viewed'
+         'no_time_viewed',
+         'schedule_story_time',
+         'status'
     ];
 }

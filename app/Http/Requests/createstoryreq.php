@@ -34,7 +34,9 @@ class createstoryreq extends FormRequest
           'summary'=>'string',
           'body'=>'string',
           'sub_categories_id'=>'required|regex:/^[0-9 ]*$/',
-          'no_time_viewed'=>'regex:/^[0-9 ]*$/'
+          'no_time_viewed'=>'regex:/^[0-9 ]*$/',
+          'schedule_story_time'=>'date',
+          'status'=>'integer'
         ];
     }
 }

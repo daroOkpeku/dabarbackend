@@ -31,14 +31,22 @@ class AuthServiceProvider extends ServiceProvider
              }
         });
 
-
-        Gate::define("check-writer", function($user){
-              if($user->role == "writer"){
-                  return true;
-              }else{
-                return false;
-              }
+        Gate::define("check-editor", function($user){
+            if($user->role == "editor"){
+                return true;
+               }else{
+                  return false;
+               }
         });
+
+
+        // Gate::define("check-writer", function($user){
+        //       if($user->role == "writer"){
+        //           return true;
+        //       }else{
+        //         return false;
+        //       }
+        // });
 
         Gate::define("check-admin", function($user){
             if($user->role == "admin"){
