@@ -24,13 +24,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+
+
 Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
     Route::post('/login', 'login');
     Route::post('/editor_register', 'editor_register');
     Route::post("/editor-login", "editor_login");
     Route::post("/admin-register", "admin_register");
-    Route::post("/admin-login", "admin_login");
+     Route::post("/admin_login", "admin_login");
     Route::post("/social-media", "social_media");
     Route::post("/contact", "contact");
     Route::put("/role_confirm/{email}/{verification_code}/{role}",  "role_confirm");
@@ -73,6 +75,7 @@ Route::middleware(['auth:sanctum', 'editor'])->prefix('editor')->group(function 
         Route::put("/editstory", "editstory");
         Route::delete("/deletestory", "deletestory");
         Route::get('/dashbordata', 'dashbordata');
+        // Route::get("/userprofile/{id}", "userprofile");
     });
 
 });
@@ -87,8 +90,16 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::post("/featuredstories", "featuredstories");
         Route::post("/tendingstories", "tendingstories");
         Route::post("/populastories", "populastories");
-        Route::get('/dashbordata', 'dashbordata');
+        Route::get('/dashboardata', 'dashboardata');
         Route::post("/mediainsert", 'mediainsert');
+        Route::get("/recentstories", "recentstories");
+        Route::get("/userprofile", "userprofile");
+        Route::post("/userprofile", "profilecreate");
+        Route::put("/userprofile", "profileupdate");
+        Route::get("/profile", 'userprofilex');
+        Route::get("/storydatalist", "storydatalist");
+        Route::post("/createstory", "createstory");
+
        });
 
 

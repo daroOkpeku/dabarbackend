@@ -1,7 +1,7 @@
 <?php
 namespace App\Traits;
 
-class StoreTrait{
+trait StoreTrait{
 
    public function hello($model, $stories_id, $type){
 

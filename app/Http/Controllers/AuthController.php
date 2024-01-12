@@ -127,7 +127,8 @@ class AuthController extends Controller
 
     public function admin_login(loginreq $request){
         $user = User::where(['email'=>$request->email])->first();
-        if($user->role == 'admin' && Hash::check($request->password, $user->password)){
+        if($user && $user->role == 'admin' && Hash::check($request->password, $user->password)){
+
           $token =  $user->createToken('my-app-token')->plainTextToken;
           $user->api_token = $token;
           $user->save();
