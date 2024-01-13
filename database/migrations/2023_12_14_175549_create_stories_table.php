@@ -16,9 +16,9 @@ return new class extends Migration
             $table->tinyText('heading')->nullable();
             $table->mediumText('presummary')->nullable();
             // $table->foreignId('category_id')->constrained('categories');
-             $table->foreignId('category_id')->references('id')->on('categories');
-            $table->foreignId('writer_id')->constrained('writers');
-            $table->foreignId('sub_categories_id')->constrained('sub_categories');
+             $table->foreignId('category_id')->references('id')->on('categories')->nullable();
+            $table->foreignId('writer_id')->constrained('writers')->nullable();
+            $table->foreignId('sub_categories_id')->constrained('sub_categories')->nullable();
             $table->string('read_time')->nullable();
             $table->tinyText('main_image')->nullable();
             $table->tinyText('keypoint')->nullable();

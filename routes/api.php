@@ -23,7 +23,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::middleware('auth:sanctum')->group(function(){
+    Route::controller(PostController::class)->group(function(){
+        Route::get('/logout', 'logout');
+    });
+});
 
 
 Route::controller(AuthController::class)->group(function(){
@@ -66,6 +70,7 @@ Route::get("/downloadsubscribe", "downloadsubscribe");
 //    });
 
 
+
 Route::middleware(['auth:sanctum', 'editor'])->prefix('editor')->group(function () {
  //  /api/editor/url
     // Other routes go here
@@ -99,7 +104,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/profile", 'userprofilex');
         Route::get("/storydatalist", "storydatalist");
         Route::post("/createstory", "createstory");
-
+        Route::get("/storyedit/{id}", "storyedit");
+        Route::put("/editstory", "editstory");
+        Route::post("/deletesinglestory", "deletesinglestory");
        });
 
 

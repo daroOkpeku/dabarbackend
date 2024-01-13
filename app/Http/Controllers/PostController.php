@@ -26,34 +26,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Codenixsv\CoinGeckoApi\CoinGeckoClient;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\HttpCache\Store;
 
 class PostController extends Controller
 {
 
       public function createstory(createstoryreq $request){
-        // if(Gate::allows("check-editor", auth()->user())){
+
            $date_time = Carbon::parse($request->date_time);
            $formattedDate = $date_time->format('Y-m-d H:i:s');
             Stories::create([
-                'heading'=>$request->heading,
+                //'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
                 'category_id'=>$request->category_id,
                 'writer_id'=>$request->writer_id,
                 'read_time'=>$request->read_time,
-                'main_image'=>$request->main_image,
-                'keypoint'=>$request->keypoint,
-                'thumbnail'=>$request->thumbnail,
+               // 'main_image'=>$request->main_image,
+                //'keypoint'=>$request->keypoint,
+                //'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
-                'sub_categories_id'=>$request->sub_categories_id,
-                'no_time_viewed'=>$request->no_time_viewed,
-                'schedule_story_time'=>$formattedDate,
-                'status'=>$request->status
+                //'sub_categories_id'=>$request->sub_categories_id,
+                //'no_time_viewed'=>$request->no_time_viewed,
+                //'schedule_story_time'=>$formattedDate,
+                //'status'=>$request->status
             ]);
             return response()->json(['success'=>'you have created a story']);
-        // }else{
-        //    return response()->json(['error'=>'you are not a writer']);
-        // }
+
       }
 
 
@@ -66,20 +65,20 @@ class PostController extends Controller
             $formattedDate = $date_time->format('Y-m-d H:i:s');
            $story = Stories::find($request->id);
            $story->update([
-                'heading'=>$request->heading,
+                // 'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
                 'category_id'=>$request->category_id,
                 'writer_id'=>$request->writer_id,
                 'read_time'=>$request->read_time,
-                'main_image'=>$request->main_image,
-                'keypoint'=>$request->keypoint,
-                'thumbnail'=>$request->thumbnail,
+                // 'main_image'=>$request->main_image,
+                // 'keypoint'=>$request->keypoint,
+                // 'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
-                'sub_categories_id'=>$request->sub_categories_id,
-                'no_time_viewed'=>$request->no_time_viewed,
-                'schedule_story_time'=>$formattedDate,
-                'status'=>$request->status
+                // 'sub_categories_id'=>$request->sub_categories_id,
+                // 'no_time_viewed'=>$request->no_time_viewed,
+                // 'schedule_story_time'=>$formattedDate,
+                // 'status'=>$request->status
            ]);
            return response()->json(['success'=>200, 'message'=>"you have edited the article"]);
            } catch (\Throwable $th) {
@@ -276,5 +275,19 @@ class PostController extends Controller
             return response()->json(['message'=>$data],200);
          }
 
+         public function storyedit(Stories $id){
+            // $data = $story->find(intval($id));
+          return response()->json(['message'=>$id],200);
+         }
+
+         public function deletesinglestory(deletestoryreq $request, Stories $story){
+            $story->where(['id'=>$request->id])->delete();
+            return response()->json(['message'=>'This story has been deleted'],200);
+         }
+
+         public function logout(){
+            auth()->user()->tokens()->delete();
+            return response()->json(['success'=>'logged out']);
+         }
 
 }

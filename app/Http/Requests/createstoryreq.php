@@ -23,20 +23,20 @@ class createstoryreq extends FormRequest
     {
 
         return [
-         'heading'=>'regex:/^[a-zA-Z0-9- ]*$/',
+         //'heading'=>'regex:/^[a-zA-Z0-9- ]*$/',
          'presummary'=>'regex:/^[a-zA-Z0-9- ]*$/',
          'category_id'=>'regex:/^[0-9 ]*$/',
          'writer_id'=>'regex:/^[0-9 ]*$/',
          'read_time'=>'regex:/^[a-zA-Z0-9- ]*$/',
-          'main_image'=>'string',
-          'keypoint'=>'string',
-          'thumbnail'=>'string',
+          //'main_image'=>'string',
+          //'keypoint'=>'string',
+          //'thumbnail'=>'string',
           'summary'=>'string',
           'body'=>'string',
-          'sub_categories_id'=>'regex:/^[0-9 ]*$/',
-          'no_time_viewed'=>'regex:/^[0-9 ]*$/',
-          'schedule_story_time'=>'date',
-          'status'=>'integer'
+          //'sub_categories_id'=>'regex:/^[0-9 ]*$/',
+          //'no_time_viewed'=>'regex:/^[0-9 ]*$/',
+         // 'schedule_story_time'=>'date',
+         // 'status'=>'integer'
         ];
     }
 }
