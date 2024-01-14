@@ -34,7 +34,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
     Route::post('/login', 'login');
     Route::post('/editor_register', 'editor_register');
-    Route::post("/editor-login", "editor_login");
+    Route::post("/editor_login", "editor_login");
     Route::post("/admin-register", "admin_register");
      Route::post("/admin_login", "admin_login");
     Route::post("/social-media", "social_media");

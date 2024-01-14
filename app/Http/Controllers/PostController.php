@@ -10,6 +10,7 @@ use App\Http\Requests\profileupdatereq;
 use App\Http\Requests\storyidreq;
 use App\Http\Requests\subscribereq;
 use App\Http\Resources\dashbordresource;
+use App\Http\Resources\storyresource;
 use App\Models\category;
 use App\Models\featured;
 use App\Models\Media;
@@ -212,7 +213,8 @@ class PostController extends Controller
 
         public function recentstories(){
          $story =   Stories::latest()->limit(4)->get();
-         return response()->json(['success'=>200, 'message'=>$story]);
+         $data = storyresource::collection($story)->resolve();
+         return response()->json(['success'=>200, 'message'=>$data]);
         }
 
         public function userprofile(User $user, Request $request){

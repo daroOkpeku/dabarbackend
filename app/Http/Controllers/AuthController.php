@@ -89,7 +89,7 @@ class AuthController extends Controller
 
     public function editor_login(loginreq $request){
         $user = User::where(['email'=>$request->email])->first();
-        if($user->role == 'editor' && Hash::check($request->password, $user->password)){
+        if($user && $user->role == 'editor' && Hash::check($request->password, $user->password)){
           $token =  $user->createToken('my-app-token')->plainTextToken;
           $user->api_token = $token;
           $user->save();
