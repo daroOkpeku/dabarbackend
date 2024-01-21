@@ -107,6 +107,11 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/storyedit/{id}", "storyedit");
         Route::put("/editstory", "editstory");
         Route::post("/deletesinglestory", "deletesinglestory");
+        Route::get("/uploadauth", "uploadauth");
+        Route::get('/publishedstories', 'publishedstories');
+        Route::get("/searchpublishedstories", "searchpublishedstories");
+        Route::get('/unpublishedstories', 'unpublishedstories');
+        Route::get('/searchunpublishedstories', 'searchunpublishedstories');
        });
 
 

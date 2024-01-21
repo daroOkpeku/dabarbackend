@@ -28,29 +28,30 @@ use Illuminate\Support\Facades\Gate;
 use Codenixsv\CoinGeckoApi\CoinGeckoClient;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\HttpCache\Store;
-
+use ImageKit\ImageKit;
 class PostController extends Controller
 {
 
       public function createstory(createstoryreq $request){
-
-           $date_time = Carbon::parse($request->date_time);
+            // createstoryreq
+            $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
+           $date_time = Carbon::parse($dateWithoutTimezone);
            $formattedDate = $date_time->format('Y-m-d H:i:s');
             Stories::create([
-                //'heading'=>$request->heading,
+                'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
                 'category_id'=>$request->category_id,
                 'writer_id'=>$request->writer_id,
                 'read_time'=>$request->read_time,
-               // 'main_image'=>$request->main_image,
-                //'keypoint'=>$request->keypoint,
-                //'thumbnail'=>$request->thumbnail,
+                'main_image'=>$request->main_image,
+                'keypoint'=>$request->keypoint,
+                'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
                 //'sub_categories_id'=>$request->sub_categories_id,
                 //'no_time_viewed'=>$request->no_time_viewed,
-                //'schedule_story_time'=>$formattedDate,
-                //'status'=>$request->status
+                'schedule_story_time'=>$formattedDate,
+                'status'=>$request->status
             ]);
             return response()->json(['success'=>'you have created a story']);
 
@@ -59,27 +60,30 @@ class PostController extends Controller
 
 
 
-      public function editstory(createstoryreq $request){
+      public function editstory(Request $request){
         // if(Gate::allows("check-editor", auth()->user())){
+            // createstoryreq
+
            try {
-            $date_time = $request->date_time?Carbon::parse($request->date_time):Carbon::now();
+            $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
+           $date_time = Carbon::parse($dateWithoutTimezone);
             $formattedDate = $date_time->format('Y-m-d H:i:s');
            $story = Stories::find($request->id);
            $story->update([
-                // 'heading'=>$request->heading,
+                'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
                 'category_id'=>$request->category_id,
                 'writer_id'=>$request->writer_id,
                 'read_time'=>$request->read_time,
-                // 'main_image'=>$request->main_image,
-                // 'keypoint'=>$request->keypoint,
-                // 'thumbnail'=>$request->thumbnail,
+                 'main_image'=>$request->main_image,
+                 'keypoint'=>$request->keypoint,
+                'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
                 // 'sub_categories_id'=>$request->sub_categories_id,
                 // 'no_time_viewed'=>$request->no_time_viewed,
-                // 'schedule_story_time'=>$formattedDate,
-                // 'status'=>$request->status
+                 'schedule_story_time'=>$formattedDate,
+                 'status'=>$request->status
            ]);
            return response()->json(['success'=>200, 'message'=>"you have edited the article"]);
            } catch (\Throwable $th) {
@@ -291,5 +295,52 @@ class PostController extends Controller
             auth()->user()->tokens()->delete();
             return response()->json(['success'=>'logged out']);
          }
+
+         public function uploadauth(){
+            $imageKit = new ImageKit(
+              "public_JTJgA6cHXctE0Rt6gwXWQsAygjA=",
+              "private_3UYq7eqQ1mnsiDgby2OPfgbCqKs=",
+              "https://ik.imagekit.io/9nikkw38wtz"
+              );
+              $authenticationParameters = $imageKit->getAuthenticationParameters();
+              return  response()->json(['success'=>$authenticationParameters]);
+           }
+
+           public function publishedstories(Request $request){
+            $story =   Stories::where(['status'=>1])->get();
+            $data = storyresource::collection($story)->resolve();
+            $ans = intval($request->get('number'));
+            $pagdata =  $this->paginate($data , 8, $ans);
+            return response()->json(['success'=>200, 'message'=>$pagdata]);
+           }
+
+           public function searchpublishedstories(Request $request){
+            $search = $request->get("search");
+            $ans = intval($request->get('number'));
+            $serchstories =  Stories::where(['status'=>1])->search($search)->take(5)->get();
+            $data = storyresource::collection($serchstories)->resolve();
+            $pagdata =  $this->paginate($data , 8, $ans);
+
+           return response()->json(['success'=>$serchstories]);
+        }
+
+
+        public function unpublishedstories(Request $request){
+            $story =   Stories::where(['status'=>0])->get();
+            $data = storyresource::collection($story)->resolve();
+            $ans = intval($request->get('number'));
+            $pagdata =  $this->paginate($data , 8, $ans);
+            return response()->json(['success'=>200, 'message'=>$pagdata]);
+           }
+
+           public function searchunpublishedstories(Request $request){
+            $search = $request->get("search");
+            $ans = intval($request->get('number'));
+            $serchstories =  Stories::where(['status'=>0])->search($search)->take(5)->get();
+            $data = storyresource::collection($serchstories)->resolve();
+            $pagdata =  $this->paginate($data , 8, $ans);
+
+           return response()->json(['success'=>$pagdata]);
+        }
 
 }
