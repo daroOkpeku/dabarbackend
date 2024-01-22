@@ -8,6 +8,7 @@ use App\Http\Requests\contactreq;
 use App\Http\Requests\editusersreq;
 use App\Http\Requests\loginreq;
 use App\Http\Requests\registerreq;
+use App\Http\Requests\role_confirm_req;
 use App\Http\Requests\socialreq;
 use App\Http\Requests\writereditorreq;
 use App\Models\Contact;
@@ -23,16 +24,17 @@ class AuthController extends Controller
 
     public function register(writereditorreq $request){
     if(Gate::allows("check-admin", auth()->user())){
+        $code = sha1(time());
       $user = User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
         'email'=>$request->email,
-        "verification_code"=>sha1(time()),
+        "verification_code"=>$code,
         'status'=>0,
       //  'password'=>$request->password,
         'role'=>'writer',
        ]);
-      event(new roleevent($user->firstname, $user->lastname, $user->email, $user->verification_code, $user->role));
+      event(new roleevent($request->firstname, $request->lastname, $request->email, $code, $request->role));
        return response()->json(['success'=>'you have registered']);
     }else{
         return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
@@ -40,11 +42,12 @@ class AuthController extends Controller
     }
 
 
-    public function role_confirm ($email, $verification_code, $role){
+    public function role_confirm ($email, $verification_code, $role, role_confirm_req $request){
           $user = User::where(['email'=>$email, "verification_code"=>$verification_code, 'role'=>$role])->first();
           if($user){
             $user->update([
                 'status'=>1,
+                'password'=>Hash::make($request->password)
             ]);
             return response()->json(["success"=>200, "message"=>"your account has been verifield"]);
           }else{
@@ -70,15 +73,18 @@ class AuthController extends Controller
 
     public function editor_register(registerreq $request){
     if(Gate::allows("check-admin", auth()->user())){
+        $code = sha1(time());
      $user =  User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
         'email'=>$request->email,
-        "verification_code"=>sha1(time()),
+        "verification_code"=>$code,
         'status'=>0,
         // 'password'=>$request->password,
-        'role'=>'editor',
+        'role'=>$request->role,
        ]);
+       event(new roleevent($request->firstname, $request->lastname, $request->email, $code, $request->role));
+
     //    event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
        return response()->json(['status'=>200, 'success'=>'you have successfully registered']);
     }else{
@@ -116,8 +122,8 @@ class AuthController extends Controller
             'email'=>$request->email,
             "verification_code"=>sha1(time()),
             'status'=>1,
-            'password'=>$request->password,
-            'role'=>'admin',
+            'password'=>Hash::make($request->password),
+            'role'=>$request->role,
            ]);
         //    event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
            return response()->json(['status'=>200, 'success'=>'you have successfully registered']);
