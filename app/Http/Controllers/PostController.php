@@ -11,6 +11,7 @@ use App\Http\Requests\storyidreq;
 use App\Http\Requests\subscribereq;
 use App\Http\Resources\dashbordresource;
 use App\Http\Resources\storyresource;
+use App\Http\Resources\usersresource;
 use App\Models\category;
 use App\Models\featured;
 use App\Models\Media;
@@ -343,4 +344,43 @@ class PostController extends Controller
            return response()->json(['success'=>$pagdata]);
         }
 
+
+        public function alluser (Request $request){
+            if(Gate::allows("check-admin", auth()->user())){
+                $user = User::all();
+                $ans = intval($request->get('number'));
+                $data = usersresource::collection($user)->resolve();
+                $pagdata =  $this->paginate($data , 8, $ans);
+                return response()->json(['success'=>$pagdata]);
+            }else{
+                return response()->json(['error'=>'you do not have access to this api']);
+            }
+       }
+
+      public function edituser(Request $request){
+        if(Gate::allows("check-admin", auth()->user())){
+          try {
+            $user = User::findOrFail($request->id);
+            $userprofile = userprofile::where('user_id', $request->id)->first();
+            DB::transaction(function() use($user, $userprofile, $request){
+                $user->update([
+                    'firstname'=>$request->firstname,
+                    'lastname'=>$request->lastname,
+                    'role'=>$request->role,
+                ]);
+
+                $userprofile->update([
+                    "username"=>$request->username,
+                    "phone"=>$request->phone
+                ]);
+                return response()->json(['success'=>200, 'message'=>'The user profile has been updated'], 200);
+
+            });
+          } catch (\Throwable $th) {
+            return response()->json(['error'=>'something went wrong']);
+          }
+        }else{
+            return response()->json(['error'=>'you do not have access to this api']);
+        }
+      }
 }

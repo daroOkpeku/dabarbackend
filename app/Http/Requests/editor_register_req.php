@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
-class registerreq extends FormRequest
+
+class editor_register_req extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,8 @@ class registerreq extends FormRequest
             "firstname"=>"required|string",
             "lastname"=>"required|string",
             "email"=>"required|email|unique:users",
-            // "verification_code"=>'required|string',
+            // "verification_code"=>'string',
             "role"=>'string',
-            "password"=> ['required', 'confirmed', 'string', Password::min(8)->letters()->numbers()->symbols()],
         ];
     }
 }

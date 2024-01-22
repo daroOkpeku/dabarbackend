@@ -22,7 +22,10 @@ class role_confirm_req extends FormRequest
     public function rules(): array
     {
         return [
-        'password'=>['required', 'string', Password::min(8)->letters()->numbers()->symbols()],
-        ];
+        'email'=>'required|email',
+        'verification_code'=>'required|string',
+        'role'=>'required|string',
+        "password"=> ['required', 'confirmed', 'string', Password::min(8)->letters()->numbers()->symbols()],
+    ];
     }
 }

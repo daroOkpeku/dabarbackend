@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Events\emailevent;
 use App\Events\roleevent;
 use App\Http\Requests\contactreq;
+use App\Http\Requests\editor_register_req;
 use App\Http\Requests\editusersreq;
 use App\Http\Requests\loginreq;
 use App\Http\Requests\registerreq;
 use App\Http\Requests\role_confirm_req;
 use App\Http\Requests\socialreq;
 use App\Http\Requests\writereditorreq;
+use App\Http\Resources\usersresource;
 use App\Models\Contact;
 use App\Models\Post;
 use App\Models\sociallink;
@@ -24,26 +26,25 @@ class AuthController extends Controller
 
     public function register(writereditorreq $request){
     if(Gate::allows("check-admin", auth()->user())){
-        $code = sha1(time());
+        // $code = sha1(time());
       $user = User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
         'email'=>$request->email,
-        "verification_code"=>$code,
+        "verification_code"=>sha1(time()),
         'status'=>0,
       //  'password'=>$request->password,
         'role'=>'writer',
        ]);
-      event(new roleevent($request->firstname, $request->lastname, $request->email, $code, $request->role));
+      event(new roleevent($request->firstname, $request->lastname, $request->email, $user->verification_code, $request->role));
        return response()->json(['success'=>'you have registered']);
     }else{
         return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
     }
     }
 
-
-    public function role_confirm ($email, $verification_code, $role, role_confirm_req $request){
-          $user = User::where(['email'=>$email, "verification_code"=>$verification_code, 'role'=>$role])->first();
+    public function role_confirm (role_confirm_req $request){
+          $user = User::where(['email'=>$request->email, "verification_code"=>$request->verification_code, 'role'=>$request->role])->first();
           if($user){
             $user->update([
                 'status'=>1,
@@ -71,19 +72,19 @@ class AuthController extends Controller
     }
 
 
-    public function editor_register(registerreq $request){
+    public function editor_register(editor_register_req $request){
     if(Gate::allows("check-admin", auth()->user())){
-        $code = sha1(time());
+        // $code = sha1(time());
      $user =  User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
         'email'=>$request->email,
-        "verification_code"=>$code,
+        "verification_code"=>sha1(time()),
         'status'=>0,
         // 'password'=>$request->password,
         'role'=>$request->role,
        ]);
-       event(new roleevent($request->firstname, $request->lastname, $request->email, $code, $request->role));
+       event(new roleevent($request->firstname, $request->lastname, $request->email, $user->verification_code, $request->role));
 
     //    event( new emailevent($user->firstname, $user->lastname, $user->email, $user->verification_code));
        return response()->json(['status'=>200, 'success'=>'you have successfully registered']);
@@ -246,5 +247,6 @@ class AuthController extends Controller
                     return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
                 }
         }
+
 
 }

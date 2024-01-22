@@ -33,13 +33,13 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::post('/editor_register', 'editor_register');
+    // Route::post('/editor_register', 'editor_register');
     Route::post("/editor_login", "editor_login");
     Route::post("/admin-register", "admin_register");
      Route::post("/admin_login", "admin_login");
     Route::post("/social-media", "social_media");
     Route::post("/contact", "contact");
-    Route::put("/role_confirm/{email}/{verification_code}/{role}",  "role_confirm");
+    Route::put("/role_confirm",  "role_confirm");
 });
 
 Route::controller(PostController::class)->group(function(){
@@ -112,6 +112,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/searchpublishedstories", "searchpublishedstories");
         Route::get('/unpublishedstories', 'unpublishedstories');
         Route::get('/searchunpublishedstories', 'searchunpublishedstories');
+        Route::get("/alluser", "alluser");
        });
 
 
@@ -122,5 +123,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/single_writer/{id}", "single_editor");
         Route::delete("/delete_writer/{id}", "delete_writer");
         Route::delete("/delete_editor/{id}", "delete_editor");
+        Route::post('/editor_register', 'editor_register');
+
     });
    });
