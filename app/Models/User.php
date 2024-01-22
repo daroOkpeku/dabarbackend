@@ -8,10 +8,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\StoreTrait;
+use Nicolaslopezj\Searchable\SearchableTrait;
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, StoreTrait;
+    use HasApiTokens, HasFactory, Notifiable, StoreTrait, SearchableTrait;
 
+
+    protected $searchable  = [
+        "columns"=>[
+           "users.firstname"=>10,
+            "users.lastname"=>10,
+            "users.email"=>10,
+            "users.role"=>10,
+        ]
+      ];
     /**
      * The attributes that are mass assignable.
      *

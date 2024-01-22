@@ -113,6 +113,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get('/unpublishedstories', 'unpublishedstories');
         Route::get('/searchunpublishedstories', 'searchunpublishedstories');
         Route::get("/alluser", "alluser");
+        Route::put("/edituser", "edituser");
+        Route::delete("/deleteuser", "deleteuser");
+        Route::get("/searchuser", "searchuser");
        });
 
 

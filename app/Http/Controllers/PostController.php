@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\createstoryreq;
+use App\Http\Requests\delete_user_req;
 use App\Http\Requests\deletestoryreq;
+use App\Http\Requests\edituser_req;
 use App\Http\Requests\mediarequest;
 use App\Http\Requests\profilecreatereq;
 use App\Http\Requests\profileupdatereq;
@@ -357,7 +359,7 @@ class PostController extends Controller
             }
        }
 
-      public function edituser(Request $request){
+      public function edituser(edituser_req $request){
         if(Gate::allows("check-admin", auth()->user())){
           try {
             $user = User::findOrFail($request->id);
@@ -377,10 +379,31 @@ class PostController extends Controller
 
             });
           } catch (\Throwable $th) {
-            return response()->json(['error'=>'something went wrong']);
+            return response()->json(['error'=>'something went wrong'], 500);
           }
         }else{
-            return response()->json(['error'=>'you do not have access to this api']);
+            return response()->json(['error'=>'you do not have access to this api'],500);
         }
       }
+
+      public function deleteuser(delete_user_req $request){
+        if(Gate::allows("check-admin", auth()->user())){
+            User::findOrFail($request->id)->delete();
+            return response()->json(['success'=>'you have deleted this user'],200);
+        }else{
+         return response()->json(['error'=>'you do have access to this api endpoint'],500);
+        }
+      }
+
+    public function searchuser(Request $request){
+        if(Gate::allows("check-admin", auth()->user())){
+            $user =  User::search($request->get('search'))->get();
+            $data = usersresource::collection($user)->resolve();
+            $ans = intval($request->get('number'));
+            $pagdata =  $this->paginate($data , 8, $ans);
+            return response()->json(['success'=>$pagdata],200);
+        }else{
+        return response()->json(['error'=>'you do have access to this api endpoint'],500);
+        }
+    }
 }
