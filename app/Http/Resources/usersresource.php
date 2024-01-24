@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
+use App\Models\userprofile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,8 +23,8 @@ class usersresource extends JsonResource
             "email"=>$this->email,
             "role"=>$this->role,
             "status"=>$this->status,
-            'username'=>optional(User::where('user_id', $this->id)->first())->username??"",
-            "phone"=>optional(User::where('user_id', $this->id)->first())->phone??"",
+            'username' => optional($this->userprofiledetails)->username,
+            'phone' => optional($this->userprofiledetails)->phone,
         ];
     }
 }

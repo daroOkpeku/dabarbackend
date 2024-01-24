@@ -37,6 +37,12 @@ class User extends Authenticatable
         'password',
     ];
 
+
+
+    public function userprofiledetails(){
+        // user_id is the foreign key and id is referencing id in user table
+        return $this->hasOne(userprofile::class, 'user_id', 'id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

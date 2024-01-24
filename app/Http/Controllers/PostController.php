@@ -30,6 +30,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Codenixsv\CoinGeckoApi\CoinGeckoClient;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use ImageKit\ImageKit;
 class PostController extends Controller
@@ -211,11 +212,11 @@ class PostController extends Controller
         }
 
 
-        public function mediadata($page){
+        public function mediadata(){
             $media =  Media::all();
-            $ans = intval($page);
-            $pagdata =  $this->paginate($media, 8, $ans);
-            return response()->json(['success'=>$pagdata]);
+            // $ans = intval($page);
+            // $pagdata =  $this->paginate($media, 8, $ans);
+            return response()->json(['success'=>$media]);
         }
 
         public function recentstories(){
@@ -364,20 +365,30 @@ class PostController extends Controller
           try {
             $user = User::findOrFail($request->id);
             $userprofile = userprofile::where('user_id', $request->id)->first();
-            DB::transaction(function() use($user, $userprofile, $request){
+            if($user && $userprofile){
+                DB::transaction(function() use($user, $userprofile, $request){
+                    $user->update([
+                        'firstname'=>$request->firstname,
+                        'lastname'=>$request->lastname,
+                        'role'=>$request->role,
+                    ]);
+
+                    $userprofile->update([
+                        "username"=>$request->username,
+                        "phone"=>$request->phone
+                    ]);
+                    return response()->json(['message'=>'The user profile has been updated'], 200);
+
+                });
+            }else if($user && !$userprofile){
                 $user->update([
                     'firstname'=>$request->firstname,
                     'lastname'=>$request->lastname,
                     'role'=>$request->role,
                 ]);
+                return response()->json(['message'=>'The user profile has been updated'], 200);
+            }
 
-                $userprofile->update([
-                    "username"=>$request->username,
-                    "phone"=>$request->phone
-                ]);
-                return response()->json(['success'=>200, 'message'=>'The user profile has been updated'], 200);
-
-            });
           } catch (\Throwable $th) {
             return response()->json(['error'=>'something went wrong'], 500);
           }
@@ -406,4 +417,58 @@ class PostController extends Controller
         return response()->json(['error'=>'you do have access to this api endpoint'],500);
         }
     }
+
+
+    public function allusercsv()
+    {
+        //  $users = User::all();
+        // $all = User::with('userprofiledetails')->get();
+        $all = User::with('userprofiledetails')->get();
+        // $all = usersresource::collection($users);
+
+        $fileName = 'userdoc.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=\"$fileName\"",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0",
+        ];
+
+        $columns = ['firstname', 'lastname', 'email', 'role', 'status', 'username', 'phone'];
+
+
+        $callback = function () use ($all, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            try {
+                foreach ($all as $al) {
+                    $row = [
+                        'firstname' => $al->firstname,
+                        'lastname'  => $al->lastname,
+                        'email'     => $al->email,
+                        'role'      => $al->role,
+                        'status'    => $al->status == 1 ? 'Active' : 'Inactive',
+                        'username'  => $al->userprofiledetails->username,
+                        'phone'     =>strval($al->userprofiledetails->phone),
+                    ];
+
+                  fputcsv($file, $row);
+                }
+                return $file;
+            } catch (\Exception $e) {
+                // Handle exceptions (log, respond, etc.)
+            } finally {
+                fclose($file); // Make sure to close the file handle
+            }
+        };
+        // return response()->stream($callback, 200, $headers);
+
+        return response()->streamDownload($callback, $fileName, $headers);
+    }
+
+
+
 }

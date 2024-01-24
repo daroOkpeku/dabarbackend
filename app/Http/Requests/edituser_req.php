@@ -25,8 +25,8 @@ class edituser_req extends FormRequest
             "firstname"=>"string",
             "lastname"=>"string",
             "role"=>"string",
-            "username"=>"string",
-            "phone"=>"phone|size:11"
+            "username"=>"nullable|string",
+            "phone"=>"nullable|string|size:11"
         ];
     }
 }

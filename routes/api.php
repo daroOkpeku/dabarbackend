@@ -116,6 +116,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::put("/edituser", "edituser");
         Route::delete("/deleteuser", "deleteuser");
         Route::get("/searchuser", "searchuser");
+        Route::get("/allusercsv", "allusercsv");
        });
 
 

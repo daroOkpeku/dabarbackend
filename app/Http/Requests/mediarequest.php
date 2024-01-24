@@ -22,9 +22,9 @@ class mediarequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string',
-            'alter_text'=>'required|string',
-            'file'=>'required|string'
+            'name'=>'string',
+            'alter_text'=>'string',
+            'file'=>'string'
         ];
     }
 }
