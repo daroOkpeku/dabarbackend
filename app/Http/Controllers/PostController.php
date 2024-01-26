@@ -302,9 +302,9 @@ class PostController extends Controller
 
          public function uploadauth(){
             $imageKit = new ImageKit(
-              "public_JTJgA6cHXctE0Rt6gwXWQsAygjA=",
-              "private_3UYq7eqQ1mnsiDgby2OPfgbCqKs=",
-              "https://ik.imagekit.io/9nikkw38wtz"
+              "public_Wl9bE4KPg58H6+uWmt7exPKW+Wc=",
+              "private_qsav7UfRQU1bRCF+6hyJyUkRnf8=",
+              "https://ik.imagekit.io/jtcvnfckl"
               );
               $authenticationParameters = $imageKit->getAuthenticationParameters();
               return  response()->json(['success'=>$authenticationParameters]);
