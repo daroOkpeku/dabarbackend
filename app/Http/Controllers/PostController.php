@@ -246,7 +246,8 @@ class PostController extends Controller
             $userx = $userprofile->where(['user_id'=>$request->user_id])->first();
               if($user && !$userx){
                 DB::transaction(function ()  use($request, $userprofile, $user) {
-                    $user->name = $request->name;
+                    $user->firstname = $request->firstname;
+                    $user->lastname = $request->lastname;
                     $user->save();
 
                    $userprofile->create([
@@ -266,7 +267,8 @@ class PostController extends Controller
             $userx = $userprofile->where(['user_id'=>$request->user_id])->first();
               if($user && $userx){
                 DB::transaction(function ()  use($request, $userx, $user) {
-                $user->name = $request->name;
+                $user->firstname = $request->firstname;
+                $user->lastname = $request->lastname;
                 $user->save();
                 $userx->username = $request->username;
                 $userx->phone = $request->phone;
@@ -443,7 +445,7 @@ class PostController extends Controller
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
-            try {
+
                 foreach ($all as $al) {
                     $row = [
                         'firstname' => $al->firstname,
@@ -457,12 +459,7 @@ class PostController extends Controller
 
                   fputcsv($file, $row);
                 }
-                return $file;
-            } catch (\Exception $e) {
-                // Handle exceptions (log, respond, etc.)
-            } finally {
-                fclose($file); // Make sure to close the file handle
-            }
+           fclose($file); // Make sure to close the file handle
         };
         // return response()->stream($callback, 200, $headers);
 

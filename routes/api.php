@@ -40,6 +40,8 @@ Route::controller(AuthController::class)->group(function(){
     Route::post("/social-media", "social_media");
     Route::post("/contact", "contact");
     Route::put("/role_confirm",  "role_confirm");
+    Route::post("/reset", "reset");
+    Route::put("/resetpassword", "resetpassword");
 });
 
 Route::controller(PostController::class)->group(function(){
@@ -57,7 +59,6 @@ Route::get("/tending", "tending");
 Route::get("/popular", "popular");
 Route::get("/featured", "featured");
 Route::get("/singlestory", "singlestory");
-Route::get("/downloadsubscribe", "downloadsubscribe");
 });
 
 
@@ -130,4 +131,11 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::post('/editor_register', 'editor_register');
 
     });
+
+    Route::controller(GetController::class)->group(function(){
+        Route::get("/allsubscribe", "allsubscribe");
+        Route::get("/downloadsubscribe", "downloadsubscribe");
+        Route::get("/searchsubsribe", "searchsubsribe");
+    });
+
    });

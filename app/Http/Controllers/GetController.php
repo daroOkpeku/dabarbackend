@@ -96,5 +96,17 @@ class GetController extends Controller
 
         }
 
+        public function allsubscribe(Request $request){
+          $subscribe =  Subscribe::all();
+          $ans = intval($request->get('number'));
+          $pagdata =  $this->paginate($subscribe, 8, $ans);
+          return response()->json(['success'=>200, 'message'=>$pagdata]);
+        }
+
+        public function searchsubsribe(Request $request){
+            $search = $request->get("search");
+            $serchstories =  Stories::where(['status'=>1])->search($search)->take(5)->get();
+            return response()->json(['success'=>$serchstories]);
+        }
 
 }

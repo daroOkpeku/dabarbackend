@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Events\emailevent;
+use App\Events\resetevent;
 use App\Events\roleevent;
 use App\Http\Requests\contactreq;
 use App\Http\Requests\editor_register_req;
 use App\Http\Requests\editusersreq;
 use App\Http\Requests\loginreq;
 use App\Http\Requests\registerreq;
+use App\Http\Requests\resetreq;
 use App\Http\Requests\role_confirm_req;
 use App\Http\Requests\socialreq;
 use App\Http\Requests\writereditorreq;
@@ -74,7 +76,7 @@ class AuthController extends Controller
 
     public function editor_register(editor_register_req $request){
     if(Gate::allows("check-admin", auth()->user())){
-        // $code = sha1(time());
+
      $user =  User::create([
         'firstname'=>$request->firstname,
         'lastname'=>$request->lastname,
@@ -96,7 +98,9 @@ class AuthController extends Controller
 
     public function editor_login(loginreq $request){
         $user = User::where(['email'=>$request->email])->first();
-        if($user && $user->role == 'editor' && Hash::check($request->password, $user->password)){
+        // return response()->json($user);
+         $role =  ($user->role == 'editor' || $user->role == 'Editor');
+        if($user && $role && Hash::check($request->password, $user->password)){
           $token =  $user->createToken('my-app-token')->plainTextToken;
           $user->api_token = $token;
           $user->save();
@@ -134,7 +138,8 @@ class AuthController extends Controller
 
     public function admin_login(loginreq $request){
         $user = User::where(['email'=>$request->email])->first();
-        if($user && $user->role == 'admin' && Hash::check($request->password, $user->password)){
+        $role =  ($user->role == 'admin' || $user->role == 'Admin');
+        if($user && $role && Hash::check($request->password, $user->password)){
 
           $token =  $user->createToken('my-app-token')->plainTextToken;
           $user->api_token = $token;
@@ -246,6 +251,29 @@ class AuthController extends Controller
                 }else{
                     return response()->json(['status'=>403, 'error'=>'you do not have access to this api']);
                 }
+        }
+
+
+        public function reset(resetreq $request){
+           try {
+            $user = User::where(['email'=>$request->email])->first();
+              event(new resetevent($user->email));
+              return response()->json(["message"=>'please check your email'], 200);
+           } catch (\Throwable $th) {
+           return response()->json(['error'=>'something went wrong']);
+           }
+        }
+
+        public function resetpassword(Request $request){
+            try {
+                $user = User::where(['email'=>$request->email])->first();
+                $user->update([
+                    "password"=>Hash::make($request->password),
+                ]);
+                return response()->json(["success"=>'you have successfully reset your password']);
+            } catch (\Throwable $th) {
+                return response()->json(["error"=>"something went wrong"]);
+            }
         }
 
 

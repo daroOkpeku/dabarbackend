@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\emailevent;
+use App\Events\resetevent;
 use App\Events\roleevent;
 use App\Listeners\emaillistener;
+use App\Listeners\resetlistener;
 use App\Listeners\rolelistener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -28,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
          ],
          roleevent::class=>[
             rolelistener::class,
+         ],
+         resetevent::class=>[
+            resetlistener::class,
          ]
     ];
 

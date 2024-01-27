@@ -22,6 +22,8 @@ class profilecreatereq extends FormRequest
     public function rules(): array
     {
         return [
+            "lastname"=>"string",
+            "firstname"=>"string",
             "username"=>'required|string',
             'phone'=>'required|min:10|max:11',
             'user_id'=>'required|integer'
