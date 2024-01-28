@@ -97,7 +97,7 @@ class GetController extends Controller
         }
 
         public function allsubscribe(Request $request){
-          $subscribe =  Subscribe::all();
+          $subscribe =  Subscribe::all()->toArray();
           $ans = intval($request->get('number'));
           $pagdata =  $this->paginate($subscribe, 8, $ans);
           return response()->json(['success'=>200, 'message'=>$pagdata]);

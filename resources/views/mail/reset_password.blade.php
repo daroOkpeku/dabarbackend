@@ -163,7 +163,7 @@
 <tr>
 <td class="pad">
 <div align="center" class="alignment" style="line-height:10px">
-<div class="fullWidth" style="max-width: 374px;"><img alt="Resetting Password" src="images/password_reset.png" style="display: block; height: auto; border: 0; width: 100%;" title="Resetting Password" width="374"/></div>
+<div class="fullWidth" style="max-width: 374px;"><img alt="Resetting Password" src="https://ik.imagekit.io/jtcvnfckl/password_reset.png?updatedAt=1706297397253" style="display: block; height: auto; border: 0; width: 100%;" title="Resetting Password" width="374"/></div>
 </div>
 </td>
 </tr>
@@ -213,7 +213,7 @@
 <w:anchorlock/>
 <v:textbox inset="0px,0px,0px,0px">
 <center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px">
-<![endif]--><a href="http://localhost:3000/demo9/resetpassword/{{ $data['email'] }}" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#101;border-radius:4px;width:auto;border-top:1px solid #101;font-weight:undefined;border-right:1px solid #101;border-bottom:1px solid #101;border-left:1px solid #101;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">Reset Password</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>
+<![endif]--><a href="https://gilded-mousse-e54026.netlify.app/demo9/resetpassword/{{ $data['email'] }}" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#101;border-radius:4px;width:auto;border-top:1px solid #101;font-weight:undefined;border-right:1px solid #101;border-bottom:1px solid #101;border-left:1px solid #101;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">Reset Password</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>
 </td>
 </tr>
 </table>

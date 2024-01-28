@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\createstoryreq;
 use App\Http\Requests\delete_user_req;
+use App\Http\Requests\sectionreq;
 use App\Http\Requests\deletestoryreq;
 use App\Http\Requests\edituser_req;
 use App\Http\Requests\mediarequest;
@@ -33,14 +34,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use ImageKit\ImageKit;
+use App\Models\stories_sections;
 class PostController extends Controller
 {
 
       public function createstory(createstoryreq $request){
             // createstoryreq
-            $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
-           $date_time = Carbon::parse($dateWithoutTimezone);
-           $formattedDate = $date_time->format('Y-m-d H:i:s');
+        //     $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
+        //   $date_time = Carbon::parse($dateWithoutTimezone);
+        //   $formattedDate = $date_time->format('Y-m-d H:i:s');
+           $date_time = Carbon::parse($request->schedule_story_time);
+        $formattedDate = $date_time->format('Y-m-d H:i:s');
             Stories::create([
                 'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
@@ -52,6 +56,7 @@ class PostController extends Controller
                 'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
+                "stories_section"=>$request->stories_section,
                 //'sub_categories_id'=>$request->sub_categories_id,
                 //'no_time_viewed'=>$request->no_time_viewed,
                 'schedule_story_time'=>$formattedDate,
@@ -64,14 +69,16 @@ class PostController extends Controller
 
 
 
-      public function editstory(Request $request){
+      public function editstory(createstoryreq $request){
         // if(Gate::allows("check-editor", auth()->user())){
             // createstoryreq
 
            try {
-            $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
-           $date_time = Carbon::parse($dateWithoutTimezone);
-            $formattedDate = $date_time->format('Y-m-d H:i:s');
+        //     $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
+        //   $date_time = Carbon::parse($dateWithoutTimezone);
+        //   $formattedDate = $date_time->format('Y-m-d H:i:s');
+        $date_time = Carbon::parse($request->schedule_story_time);
+        $formattedDate = $date_time->format('Y-m-d H:i:s');
            $story = Stories::find($request->id);
            $story->update([
                 'heading'=>$request->heading,
@@ -84,6 +91,7 @@ class PostController extends Controller
                 'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
+                 "stories_section"=>$request->stories_section,
                 // 'sub_categories_id'=>$request->sub_categories_id,
                 // 'no_time_viewed'=>$request->no_time_viewed,
                  'schedule_story_time'=>$formattedDate,
@@ -207,7 +215,8 @@ class PostController extends Controller
             $media->alter_text = $request->alter_text;
             $media->file = $request->file;
             $media->save();
-           return response()->json(['success'=>200, 'message'=>'your file has been saved']);
+             $data = $media->all();
+           return response()->json(['success'=>200, 'message'=>'your file has been saved', 'data'=>$data]);
             }
         }
 
@@ -467,5 +476,50 @@ class PostController extends Controller
     }
 
 
+    public function stories_sections(){
+         if(Gate::allows("check-admin", auth()->user())){
+      $stories_sections = stories_sections::all();
+      return response()->json(['success'=>$stories_sections]);
+         }else{
+            return response()->json(['error'=>'you do not have access to this api'],500);
+        }
+    }
+
+
+    public function create_section(sectionreq $request){
+        if(Gate::allows("check-admin", auth()->user())){
+             stories_sections::create([
+                  "name"=>$request->name
+                 ]);
+        }else{
+             return response()->json(['error'=>'you do not have access to this api'],500);
+        }
+    }
+
+    public function stories_unique_date(){
+        $groupedData = [];
+
+        $uniqueDates = Stories::distinct()->pluck('created_at')->take(10)->latest()->get();
+
+        foreach ($uniqueDates as $date) {
+             $datex =  Carbon::parse($date);
+            $dataForDate = Stories::whereDate('created_at', $datex)->get();
+
+            $groupedData[] = [
+                'date' => $date,
+                'data' => $dataForDate,
+            ];
+        }
+
+        return response()->json(['success'=>$groupedData],200);
+    }
+
+    public function stories_category(Request $request){
+       $all = Stories::all();
+       $stories =  storyresource::collection($all);
+       $ans = intval($request->get('number'));
+       $pagdata =  $this->paginate($stories , 8, $ans);
+       return response()->json(['success'=>$pagdata],200);
+    }
 
 }

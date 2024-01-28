@@ -118,6 +118,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::delete("/deleteuser", "deleteuser");
         Route::get("/searchuser", "searchuser");
         Route::get("/allusercsv", "allusercsv");
+        Route::get("/stories_sections", "stories_sections");
+        Route::post("/create_section", "create_section");
+        Route::get("/stories_unique_date", "stories_unique_date");
+        Route::get("/stories_category", "stories_category");
        });
 
 
