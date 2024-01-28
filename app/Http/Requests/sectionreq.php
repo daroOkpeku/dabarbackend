@@ -22,7 +22,7 @@ class sectionreq extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"string"
+            "name"=>"stringunique:,"
         ];
     }
 }

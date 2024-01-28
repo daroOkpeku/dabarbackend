@@ -60,18 +60,18 @@ class AuthController extends Controller
 
 
 
-    public function login(loginreq $request){
-      $user = User::where(['email'=>$request->email])->first();
-      if($user && Hash::check($request->password, $user->password)){
-        $token =  $user->createToken('my-app-token')->plainTextToken;
-        $user->api_token = $token;
-        $user->save();
-        $data =['token'=>$token, 'name'=>$user->name, 'email'=>$user->email, 'role'=>$user->role, 'id'=>$user->id ];
-        return response()->json(['success'=>200, 'message'=>'you logged in successfully', 'data'=>$data]);
-      }else{
-        return response()->json(['error'=>'please enter correct details']);
-      }
-    }
+    // public function login(loginreq $request){
+    //   $user = User::where(['email'=>$request->email])->first();
+    //   if($user && Hash::check($request->password, $user->password)){
+    //     $token =  $user->createToken('my-app-token')->plainTextToken;
+    //     $user->api_token = $token;
+    //     $user->save();
+    //     $data =['token'=>$token, 'name'=>$user->name, 'email'=>$user->email, 'role'=>$user->role, 'id'=>$user->id ];
+    //     return response()->json(['success'=>200, 'message'=>'you logged in successfully', 'data'=>$data]);
+    //   }else{
+    //     return response()->json(['error'=>'please enter correct details']);
+    //   }
+    // }
 
 
     public function editor_register(editor_register_req $request){
@@ -96,11 +96,20 @@ class AuthController extends Controller
     }
     }
 
-    public function editor_login(loginreq $request){
+    public function login(loginreq $request){
         $user = User::where(['email'=>$request->email])->first();
+        if($user->role == 'editor' || $user->role == 'Editor'){
+          return $this->editor_login($user, $request->password);
+        }else if($user->role == 'admin' || $user->role == 'Admin'){
+         return  $this->admin_login($user, $request->password);
+        }
+    }
+
+    public function editor_login($user, $password){
+        // $user = User::where(['email'=>$request->email])->first();
         // return response()->json($user);
          $role =  ($user->role == 'editor' || $user->role == 'Editor');
-        if($user && $role && Hash::check($request->password, $user->password)){
+        if($user && $role && Hash::check($password, $user->password)){
           $token =  $user->createToken('my-app-token')->plainTextToken;
           $user->api_token = $token;
           $user->save();
@@ -136,10 +145,10 @@ class AuthController extends Controller
 
 
 
-    public function admin_login(loginreq $request){
-        $user = User::where(['email'=>$request->email])->first();
+    public function admin_login($user, $password){
+
         $role =  ($user->role == 'admin' || $user->role == 'Admin');
-        if($user && $role && Hash::check($request->password, $user->password)){
+        if($user && $role && Hash::check($password, $user->password)){
 
           $token =  $user->createToken('my-app-token')->plainTextToken;
           $user->api_token = $token;

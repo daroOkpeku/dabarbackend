@@ -32,11 +32,11 @@ Route::middleware('auth:sanctum')->group(function(){
 
 Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
-    Route::post('/login', 'login');
+    // Route::post('/login', 'login');
     // Route::post('/editor_register', 'editor_register');
-    Route::post("/editor_login", "editor_login");
+    // Route::post("/editor_login", "editor_login");
     Route::post("/admin-register", "admin_register");
-     Route::post("/admin_login", "admin_login");
+     Route::post("/admin_login", "login");
     Route::post("/social-media", "social_media");
     Route::post("/contact", "contact");
     Route::put("/role_confirm",  "role_confirm");
@@ -119,7 +119,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/searchuser", "searchuser");
         Route::get("/allusercsv", "allusercsv");
         Route::get("/stories_sections", "stories_sections");
-        Route::post("/create_section", "create_section");
+        Route::post("/create_category", "create_category");
         Route::get("/stories_unique_date", "stories_unique_date");
         Route::get("/stories_category", "stories_category");
        });

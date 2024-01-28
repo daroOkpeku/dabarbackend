@@ -486,9 +486,9 @@ class PostController extends Controller
     }
 
 
-    public function create_section(sectionreq $request){
+    public function create_category(sectionreq $request){
         if(Gate::allows("check-admin", auth()->user())){
-             stories_sections::create([
+             category::create([
                   "name"=>$request->name
                  ]);
         }else{
