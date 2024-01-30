@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('writer_id')->constrained('writers')->nullable();
             $table->foreignId('sub_categories_id')->constrained('sub_categories')->nullable();
             $table->string('read_time')->nullable();
+            $table->longtext('stories_section')->nullable(); 
             $table->tinyText('main_image')->nullable();
             $table->tinyText('keypoint')->nullable();
             $table->tinyText('thumbnail')->nullable();

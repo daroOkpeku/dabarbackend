@@ -26,6 +26,7 @@ class Stories extends Model
          'read_time',
          'main_image',
          'keypoint',
+         "stories_section",
          'thumbnail',
          'summary',
          'body',
