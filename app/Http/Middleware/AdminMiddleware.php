@@ -16,8 +16,8 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-      $editor = (auth()->user()->role == "Editor" || auth()->user()->role  == 'editor');
-           if(auth()->check() && auth()->user()->role == 'admin' &&  $editor){
+         $role = (auth()->user()->role == 'admin' || auth()->user()->role == 'Admin' ||  auth()->user()->role == 'editor' ||  auth()->user()->role == 'Editor');
+            if(auth()->check() && $role ){
             return $next($request);
            }else{
              return response()->json(['status'=>403, 'error'=>'unauthorized'], 403);
