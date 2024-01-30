@@ -12,6 +12,7 @@ use App\Http\Requests\profilecreatereq;
 use App\Http\Requests\profileupdatereq;
 use App\Http\Requests\storyidreq;
 use App\Http\Requests\subscribereq;
+use App\Http\Requests\writer_req;
 use App\Http\Resources\dashbordresource;
 use App\Http\Resources\storyresource;
 use App\Http\Resources\usersresource;
@@ -52,8 +53,8 @@ class PostController extends Controller
                 'writer_id'=>$request->writer_id,
                 'read_time'=>$request->read_time,
                 'main_image'=>$request->main_image,
-                'keypoint'=>$request->keypoint,
-                'thumbnail'=>$request->thumbnail,
+                // 'keypoint'=>$request->keypoint,
+                // 'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
                 "stories_section"=>$request->stories_section,
@@ -87,8 +88,8 @@ class PostController extends Controller
                 'writer_id'=>$request->writer_id,
                 'read_time'=>$request->read_time,
                  'main_image'=>$request->main_image,
-                 'keypoint'=>$request->keypoint,
-                'thumbnail'=>$request->thumbnail,
+                //  'keypoint'=>$request->keypoint,
+                // 'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
                  "stories_section"=>$request->stories_section,
@@ -491,6 +492,7 @@ class PostController extends Controller
              category::create([
                   "name"=>$request->name
                  ]);
+                 return response()->json(['success'=>'category created successfully'],200);
         }else{
              return response()->json(['error'=>'you do not have access to this api'],500);
         }
@@ -499,8 +501,7 @@ class PostController extends Controller
     public function stories_unique_date(){
         $groupedData = [];
 
-        $uniqueDates = Stories::distinct()->pluck('created_at')->take(10)->latest()->get();
-
+        $uniqueDates =  Stories::latest('created_at')->take(10)->pluck('created_at');
         foreach ($uniqueDates as $date) {
              $datex =  Carbon::parse($date);
             $dataForDate = Stories::whereDate('created_at', $datex)->get();
@@ -515,11 +516,44 @@ class PostController extends Controller
     }
 
     public function stories_category(Request $request){
-       $all = Stories::all();
-       $stories =  storyresource::collection($all);
-       $ans = intval($request->get('number'));
-       $pagdata =  $this->paginate($stories , 8, $ans);
-       return response()->json(['success'=>$pagdata],200);
+    //    $all = Stories::all();
+    //    $stories =  storyresource::collection($all)->resolve();
+    //    $ans = intval($request->get('number'));
+    //    $pagdata =  $this->paginate($stories , 8, $ans);
+    //    return response()->json(['success'=>$pagdata],200);
+
+    $all = category::all()->toArray();
+    $ans = intval($request->get('number'));
+   $pagdata =  $this->paginate($all , 8, $ans);
+    return response()->json(['success'=>$pagdata]);
+    }
+
+
+    public function all_writer(Request $request){
+        $all = writer::all()->toArray();
+        $ans = intval($request->get('number'));
+        $pagdata =  $this->paginate($all , 8, $ans);
+         return response()->json(['success'=>$pagdata]);
+    }
+
+    public function create_writer(writer_req $request){
+        if(Gate::allows("check-admin", auth()->user())){
+       writer::create([
+        "name"=>$request->name
+       ]);
+       return response()->json(['success'=>'you have created a writer']);
+    }else{
+       return response()->json(['error'=>'you do not have access to this api'],500);
+       }
+    }
+
+    public function delete_writer(edituser_req $request){
+        if(Gate::allows("check-admin", auth()->user())){
+            $writer = writer::find($request->id)->delete();
+            return response()->json(["success"=>"the writer has been deleted"]);
+        }else{
+            return response()->json(['error'=>'you do not have access to this api'],500);
+        }
     }
 
 }

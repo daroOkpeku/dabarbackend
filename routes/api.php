@@ -48,6 +48,9 @@ Route::controller(PostController::class)->group(function(){
     Route::get("/cryptoapimrk", "cryptoapi");
     Route::post("/subscribe", "subscribe");
     Route::get("/mediadata", "mediadata");
+
+
+
 });
 
 // Route::get("/cryptoapimrk", [PostController::class, 'cryptoapi']);
@@ -122,6 +125,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::post("/create_category", "create_category");
         Route::get("/stories_unique_date", "stories_unique_date");
         Route::get("/stories_category", "stories_category");
+        Route::get("/all_writer", "all_writer");
+        Route::post("/create_writer", "create_writer");
+        Route::delete("/delete_writer", "delete_writer");
        });
 
 

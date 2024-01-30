@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class sectionreq extends FormRequest
+class writer_req extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class sectionreq extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "string|unique:categories,name",
-         ];
+        "name"=>"string"
+        ];
     }
 }
