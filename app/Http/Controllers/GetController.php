@@ -60,7 +60,7 @@ class GetController extends Controller
      $data = $stories->where(['category_id'=>$categoryanx])->get()->toArray();
      $ans = intval($request->get('number'));
      $pagdata =  $this->paginate($data, 8, $ans);
-     return response()->json(['success'=>$pagdata]);
+     return response()->json(['success'=>$pagdata],200);
     }
 
     public function updatestories(){
@@ -97,7 +97,8 @@ class GetController extends Controller
               $ans = $story->no_time_viewed + 1;
               $story->no_time_viewed =  $ans;
                $story->save();
-                 return response()->json(['success'=>200, 'message'=>$story]);
+               $data = uniquecategory::make($story);
+                 return response()->json(['success'=>200, 'message'=>$data], 200);
             }else{
            if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0 && $schedule->diffInMinutes($todaytime) && $schedule->diffInSeconds($todaytime)){
             $ans = $story->no_time_viewed + 1;

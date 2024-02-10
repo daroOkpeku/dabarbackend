@@ -23,7 +23,7 @@ trait StoreTrait{
 
    public function randomx($model, $section){
     $tending = $model->where('stories_section', $section)->inRandomOrder()->latest()->limit(5)->get();
-    return response()->json(["success"=>$tending]);
+    return response()->json(["success"=>$tending],200);
    }
 
    public function editfun($userinfo, $firstname, $lastname, $email,  $role){
@@ -35,7 +35,7 @@ trait StoreTrait{
         $userinfo->save();
         return response()->json(['success'=>200, 'message'=>'you have inserted your social media links'], 200);
       }else{
-         return response()->json(['error'=>500, 'message'=>'This id does not exist']);
+         return response()->json(['error'=>500, 'message'=>'This id does not exist'], 200);
       }
 
    }
@@ -44,9 +44,9 @@ trait StoreTrait{
    public function find_single($user, $id){
     $userinfo = $user->where(['role'=>'editor', 'id'=>$id])->first();
     if($userinfo){
-     return response()->json(['status'=>200, 'success'=>$userinfo]);
+     return response()->json([ 'success'=>$userinfo],200);
     }else{
-     return response()->json(['error'=>500, 'error'=>'you selected the wrong user']);
+     return response()->json([ 'error'=>'you selected the wrong user'],500);
     }
    }
 }
