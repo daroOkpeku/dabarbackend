@@ -21,8 +21,8 @@ trait StoreTrait{
    }
 
 
-   public function randomx($model){
-    $tending = $model->inRandomOrder()->limit(5)->get();
+   public function randomx($model, $section){
+    $tending = $model->where('stories_section', $section)->inRandomOrder()->latest()->limit(5)->get();
     return response()->json(["success"=>$tending]);
    }
 

@@ -48,8 +48,7 @@ Route::controller(PostController::class)->group(function(){
     Route::get("/cryptoapimrk", "cryptoapi");
     Route::post("/subscribe", "subscribe");
     Route::get("/mediadata", "mediadata");
-
-
+    Route::post('/stories_from_client', 'stories_from_client');
 
 });
 
@@ -60,8 +59,10 @@ Route::controller(GetController::class)->group(function(){
 Route::get("/searchstories", "searchstories")->where("search", "[a-zA-Z0-9- ]+");
 Route::get("/tending", "tending");
 Route::get("/popular", "popular");
-Route::get("/featured", "featured");
+Route::get("/editor", "editor");
 Route::get("/singlestory", "singlestory");
+Route::get("/category", "category");
+Route::get("/randomcategory", "randomcategory");
 });
 
 

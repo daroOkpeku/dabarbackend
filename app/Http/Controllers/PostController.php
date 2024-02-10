@@ -556,4 +556,29 @@ class PostController extends Controller
         }
     }
 
+
+    public function stories_from_client(Request $request){
+        Stories::create([
+            'heading'=>$request->heading,
+            'presummary'=>$request->presummary,
+            // 'category_id'=>$request->category_id,
+            // 'writer_id'=>$request->writer_id,
+            'read_time'=>$request->read_time,
+            'main_image'=>$request->main_image,
+            // 'keypoint'=>$request->keypoint,
+            // 'thumbnail'=>$request->thumbnail,
+            'summary'=>$request->summary,
+            'body'=>$request->body,
+            'writer'=>$request->writer,
+            'category'=>$request->category
+            //"stories_section"=>$request->stories_section,
+            //'sub_categories_id'=>$request->sub_categories_id,
+            //'no_time_viewed'=>$request->no_time_viewed,
+            //'schedule_story_time'=>$formattedDate,
+            //'status'=>$request->status
+        ]);
+
+        return response()->json(['success'=>'successful']);
+    }
+
 }
