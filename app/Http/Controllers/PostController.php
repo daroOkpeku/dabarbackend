@@ -558,6 +558,13 @@ class PostController extends Controller
 
 
     public function stories_from_client(Request $request){
+    $story = Stories::where(['heading'=>$request->heading])->first();
+    if($story){
+        $story->body = $request->body;
+        $story->save();
+        return response()->json(['success'=>'successful']);
+    }else{
+
         Stories::create([
             'heading'=>$request->heading,
             'presummary'=>$request->presummary,
@@ -579,6 +586,9 @@ class PostController extends Controller
         ]);
 
         return response()->json(['success'=>'successful']);
+
+    }
+
     }
 
 }

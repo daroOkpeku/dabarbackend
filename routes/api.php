@@ -63,6 +63,8 @@ Route::get("/editor", "editor");
 Route::get("/singlestory", "singlestory");
 Route::get("/category", "category");
 Route::get("/randomcategory", "randomcategory");
+Route::get("/categoryfilter", "categoryfilter");
+Route::get("/randomstories", "randomstories");
 });
 
 

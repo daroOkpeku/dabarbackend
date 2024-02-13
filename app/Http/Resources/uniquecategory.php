@@ -17,6 +17,7 @@ class uniquecategory extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'=>$this->id,
             'heading'=>$this->heading,
             'presummary'=>$this->presummary,
             'category_id'=>$this->category_id,
@@ -29,7 +30,9 @@ class uniquecategory extends JsonResource
             'schedule_story_time'=>$this->schedule_story_time,
             'status'=>$this->status,
             'writer'=>optional(writer::where('id', $this->writer_id)->first())->name,
-            'category'=>optional(category::where('id', $this->category_id)->first())->name
+            'category'=>optional(category::where('id', $this->category_id)->first())->name,
+            'created_at'=>$this->created_at
+
         ];
     }
 }

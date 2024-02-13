@@ -1,6 +1,8 @@
 <?php
 namespace App\Traits;
 
+use App\Http\Resources\uniquecategory;
+
 trait StoreTrait{
 
    public function hello($model, $stories_id, $type){
@@ -21,9 +23,10 @@ trait StoreTrait{
    }
 
 
-   public function randomx($model, $section){
-    $tending = $model->where('stories_section', $section)->inRandomOrder()->latest()->limit(5)->get();
-    return response()->json(["success"=>$tending],200);
+   public function randomx($model, $section, $word){
+    $tending = $model->where(['stories_section'=>$word, 'status'=>1])->orderBy('created_at', 'asc')->inRandomOrder()->latest()->limit($section)->get();
+    $uniquecategory = uniquecategory::collection($tending)->resolve();
+    return response()->json(["success"=>$uniquecategory],200);
    }
 
    public function editfun($userinfo, $firstname, $lastname, $email,  $role){

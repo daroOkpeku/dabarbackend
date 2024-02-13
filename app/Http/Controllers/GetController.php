@@ -35,21 +35,30 @@ class GetController extends Controller
     // }
 
     public function  tending(Stories $stories){
-    return  $stories->randomx($stories, 1);
+    return  $stories->randomx($stories, 8, 'Trending');
     }
 
     public function editor(Stories $stories){
-      return  $stories->randomx($stories, 2);
+      return  $stories->randomx($stories, 3, "Editor");
     }
 
     public function popular(Stories $stories){
-    return $stories->randomx($stories, 3);
+    return $stories->randomx($stories, 18, 'Popular');
     }
 
     public function randomcategory(Stories $stories){
-        $uni = $stories->distinct()->pluck('category_id')->limit(4);
-     $stories = Stories::whereIn('category_id',  $uni)->get();
-     return response()->json(['success'=>$stories]);
+        // $uni = Stories::orderBy('created_at', 'desc')->pluck('category_id');
+        // whereIn('category_id', $uni)
+        $stories = Stories::where('status', 1)->orderBy('created_at', 'desc')->limit(4)->get();
+         $uniquecategory = uniquecategory::collection($stories)->resolve();
+        return response()->json(['success' => $uniquecategory]);
+
+    }
+
+    public function randomstories(Stories $stories){
+     $storyx =   $stories->inRandomOrder()->limit(6)->get();
+     $uniquecategory = uniquecategory::collection($storyx)->resolve();
+     return response()->json(['success'=>$uniquecategory],200);
     }
 
     public function category(Stories $stories, Request $request){
@@ -57,7 +66,7 @@ class GetController extends Controller
       // $category = category::where('id', $uni)->first();
     //   $categoryanx = $request->get('category_id')?$request->get('category_id'):$category->id;
     $categoryanx = $request->get('category_id');
-     $data = $stories->where(['category_id'=>$categoryanx])->get()->toArray();
+     $data = $stories->where(['category_id'=>$categoryanx, 'status'=>1])->get()->toArray();
      $ans = intval($request->get('number'));
      $pagdata =  $this->paginate($data, 8, $ans);
      return response()->json(['success'=>$pagdata],200);
@@ -88,7 +97,7 @@ class GetController extends Controller
 
     public function singlestory(Request $request){
         try {
-            $story = Stories::where(["id", $request->id])->first();
+            $story = Stories::find(intval($request->get('id')));
             $todaytime =  CarbonImmutable::now();
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
             // $clientIp = $request->header('x-real-ip') ?: $request->ip();
@@ -116,6 +125,16 @@ class GetController extends Controller
 
         }
 
+    }
+
+
+    public function categoryfilter(Request $request){
+    $category =optional(category::where('name', $request->get('category'))->first())->id??"";
+    $story = Stories::where(['category_id'=>$category])->get();
+    $uniquecategory =  uniquecategory::collection($story)->resolve();
+    $ans = intval($request->get('number'));
+    $pagdata =  $this->paginate($uniquecategory, 8, $ans);
+    return response()->json(['success'=>$pagdata]);
     }
 
 

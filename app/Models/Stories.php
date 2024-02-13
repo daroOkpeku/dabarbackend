@@ -10,6 +10,7 @@ class Stories extends Model
 {
     use HasFactory;
     use SearchableTrait;
+    use StoreTrait;
 
     protected $searchable  = [
         "columns"=>[

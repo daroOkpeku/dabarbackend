@@ -23,8 +23,8 @@ class createstoryreq extends FormRequest
     {
 
         return [
-         'heading'=>'regex:/^[a-zA-Z0-9- ]*$/',
-         'presummary'=>'regex:/^[a-zA-Z0-9- ]*$/',
+         'heading'=>'string',
+         'presummary'=>'string',
          'category_id'=>'regex:/^[0-9 ]*$/',
          'writer_id'=>'regex:/^[0-9 ]*$/',
          'read_time'=>'regex:/^[a-zA-Z0-9- ]*$/',
