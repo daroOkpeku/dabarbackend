@@ -15,6 +15,7 @@ use App\Http\Requests\subscribereq;
 use App\Http\Requests\writer_req;
 use App\Http\Resources\dashbordresource;
 use App\Http\Resources\storyresource;
+use App\Http\Resources\uniquecategory;
 use App\Http\Resources\usersresource;
 use App\Models\category;
 use App\Models\featured;
@@ -591,6 +592,40 @@ class PostController extends Controller
 
     }
 
+    }
+
+    public function story_admin (Stories $story, Request $request){
+    if(Gate::allows("check-admin", auth()->user())){
+     $stories =  $story->orderBy('created_at', 'desc')->get();
+     $uniquecategory = uniquecategory::collection($stories)->resolve();
+     $ans = intval($request->get('number'));
+     $pagdata =  $this->paginate($uniquecategory, 8, $ans);
+     return response()->json(['success'=>$pagdata],200);
+     }else{
+     return response()->json(['error'=>'you do not have access to this api'],500);
+
+     }
+    }
+
+    public function story_delete(Request $request){
+    if(Gate::allows("check-admin", auth()->user())){
+    Stories::find($request->get('story_id'))->delete();
+    return response()->json(['success'=>'successful'],200);
+    }else{
+    return response()->json(['error'=>'you do not have access to this api'],500);
+    }
+    }
+
+    public function change_category(Request $request){
+    if(Gate::allows("check-admin", auth()->user())){
+    $categoryid = optional(category::where(['name'=>$request->category])->first())->id??"";
+    Stories::find($request->id)->update([
+        "category_id"=>$categoryid
+    ]);
+     return response()->json(['success'=>'successful'],200);
+    }else{
+    return response()->json(['error'=>'you do not have access to this api'],500);
+     }
     }
 
 }

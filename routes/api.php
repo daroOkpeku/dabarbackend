@@ -132,6 +132,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/all_writer", "all_writer");
         Route::post("/create_writer", "create_writer");
         Route::delete("/delete_writer", "delete_writer");
+
+        Route::get("/story_admin", "story_admin");
+        Route::delete("/story_delete", "story_delete");
+        Route::patch("/change_category", "change_category");
        });
 
 
