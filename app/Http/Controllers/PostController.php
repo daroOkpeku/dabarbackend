@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\change_category;
 use App\Http\Requests\createstoryreq;
 use App\Http\Requests\delete_user_req;
 use App\Http\Requests\sectionreq;
@@ -616,7 +617,7 @@ class PostController extends Controller
     }
     }
 
-    public function change_category(Request $request){
+    public function change_category(change_category $request){
     if(Gate::allows("check-admin", auth()->user())){
     $categoryid = optional(category::where(['name'=>$request->category])->first())->id??"";
     Stories::find($request->id)->update([
