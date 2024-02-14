@@ -560,7 +560,9 @@ class PostController extends Controller
     public function stories_from_client(Request $request){
     $story = Stories::where(['heading'=>$request->heading])->first();
     if($story){
-        $story->body = $request->body;
+        // $story->body = $request->body;
+        $story->main_image = $request->main_image;
+        $story->status = 1;
         $story->save();
         return response()->json(['success'=>'successful']);
     }else{
@@ -577,12 +579,12 @@ class PostController extends Controller
             'summary'=>$request->summary,
             'body'=>$request->body,
             'writer'=>$request->writer,
-            'category'=>$request->category
+            'category'=>$request->category,
             //"stories_section"=>$request->stories_section,
             //'sub_categories_id'=>$request->sub_categories_id,
             //'no_time_viewed'=>$request->no_time_viewed,
             //'schedule_story_time'=>$formattedDate,
-            //'status'=>$request->status
+            'status'=>1,
         ]);
 
         return response()->json(['success'=>'successful']);

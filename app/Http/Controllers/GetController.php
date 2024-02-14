@@ -49,7 +49,7 @@ class GetController extends Controller
     public function randomcategory(Stories $stories){
         // $uni = Stories::orderBy('created_at', 'desc')->pluck('category_id');
         // whereIn('category_id', $uni)
-        $stories = Stories::where('status', 1)->orderBy('created_at', 'desc')->limit(4)->get();
+        $stories = Stories::where('status', 1)->orderBy('created_at', 'asc')->limit(4)->get();
          $uniquecategory = uniquecategory::collection($stories)->resolve();
         return response()->json(['success' => $uniquecategory]);
 
