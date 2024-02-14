@@ -135,7 +135,8 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
         Route::get("/story_admin", "story_admin");
         Route::delete("/story_delete", "story_delete");
-        Route::patch("/change_category", "change_category");
+        Route::put("/change_category", "change_category");
+        Route::get("/allcategory", "allcategory");
        });
 
 

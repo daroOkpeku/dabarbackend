@@ -628,4 +628,13 @@ class PostController extends Controller
      }
     }
 
+    public function allcategory(){
+    if(Gate::allows("check-admin", auth()->user())){
+     $category = category::all();
+     return response()->json(['success'=>$category],200);
+    }else{
+        return response()->json(['error'=>'you do not have access to this api'],500);
+    }
+   }
+
 }
