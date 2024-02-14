@@ -35,15 +35,54 @@ class GetController extends Controller
     // }
 
     public function  tending(Stories $stories){
-    return  $stories->randomx($stories, 8, 'Trending');
+    // return  $stories->randomx($stories, 8, 'Trending');
+    $arr = array();
+    $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+    foreach($storiesx as $story){
+      $storiesSection = json_decode($story->stories_section, true);
+      if (is_string($story->stories_section) && $story->stories_section == 'Trending' ) {
+          array_push($arr, $story);
+      } elseif (is_array($storiesSection) && in_array("Trending", json_decode($story->stories_section, true)) ) {
+          array_push($arr, $story);
+      }
+    }
+    $slicedArray = array_slice($arr, 0, 8);
+    $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
+    return response()->json(["success"=>$uniquecategory],200);
     }
 
     public function editor(Stories $stories){
-      return  $stories->randomx($stories, 3, "Editor");
+        $arr = array();
+      $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+      foreach($storiesx as $story){
+        $storiesSection = json_decode($story->stories_section, true);
+        if (is_string($story->stories_section) && $story->stories_section == 'Editor' ) {
+            array_push($arr, $story);
+        } elseif (is_array($storiesSection) && in_array("Editor", json_decode($story->stories_section, true)) ) {
+            array_push($arr, $story);
+        }
+      }
+      $slicedArray = array_slice($arr, 0, 3);
+      $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
+      return response()->json(["success"=>$uniquecategory],200);
+    //   return  $stories->randomx($stories, 3, "Editor");
     }
 
-    public function popular(Stories $stories){
-    return $stories->randomx($stories, 18, 'Popular');
+    public function popular(Stories $stories, Request $request){
+    $arr = array();
+    $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+    foreach($storiesx as $story){
+      $storiesSection = json_decode($story->stories_section, true);
+      if (is_string($story->stories_section) && $story->stories_section == 'Popular' ) {
+          array_push($arr, $story);
+      } elseif (is_array($storiesSection) && in_array("Popular", json_decode($story->stories_section, true)) ) {
+          array_push($arr, $story);
+      }
+    }
+    $uniquecategory = uniquecategory::collection($arr)->resolve();
+    $ans = intval($request->get('number'));
+    $pagdata =  $this->paginate($uniquecategory, 6, $ans);
+    return response()->json(["success"=>$pagdata],200);
     }
 
     public function randomcategory(Stories $stories){
@@ -79,7 +118,7 @@ class GetController extends Controller
         if($story->status == 1){
         array_push($data, $story);
         }else{
-            $todaytime =  CarbonImmutable::now();
+            $todaytime =  CarbonImmutable::now('America/Los_Angeles');
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
 
             if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0 && $schedule->diffInMinutes($todaytime) && $schedule->diffInSeconds($todaytime)){
@@ -98,7 +137,7 @@ class GetController extends Controller
     public function singlestory(Request $request){
         try {
             $story = Stories::find(intval($request->get('id')));
-            $todaytime =  CarbonImmutable::now();
+            $todaytime =  CarbonImmutable::now('America/Los_Angeles');
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
             // $clientIp = $request->header('x-real-ip') ?: $request->ip();
             // $ip = ipadress::where('ip', $clientIp)->first();
