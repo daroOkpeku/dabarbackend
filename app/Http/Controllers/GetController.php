@@ -37,47 +37,66 @@ class GetController extends Controller
     public function  tending(Stories $stories){
     // return  $stories->randomx($stories, 8, 'Trending');
     $arr = array();
-    $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+     $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+
     foreach($storiesx as $story){
-      $storiesSection = json_decode($story->stories_section, true);
-      if (is_string($story->stories_section) && $story->stories_section == 'Trending' ) {
-          array_push($arr, $story);
-      } elseif (is_array($storiesSection) && in_array("Trending", json_decode($story->stories_section, true)) ) {
-          array_push($arr, $story);
+$storiesSection = json_decode($story->stories_section, true);
+
+      if( $story->stories_section != null &&  $story->stories_section != "" && is_string($storiesSection)){
+        $zoe = json_decode($story->stories_section, true);
+        $cow = json_decode($zoe, true);
+        if(in_array("Trending", $cow)){
+       array_push($arr, $story);
+        }
+      }else if(is_array($storiesSection) && in_array("Trending", json_decode($story->stories_section, true))){
+        array_push($arr, $story);
       }
+
+
     }
     $slicedArray = array_slice($arr, 0, 8);
     $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
-    return response()->json(["success"=>$uniquecategory],200);
+
+     return response()->json(["success"=>$uniquecategory],200);
     }
 
     public function editor(Stories $stories){
+
         $arr = array();
       $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
       foreach($storiesx as $story){
         $storiesSection = json_decode($story->stories_section, true);
-        if (is_string($story->stories_section) && $story->stories_section == 'Editor' ) {
-            array_push($arr, $story);
-        } elseif (is_array($storiesSection) && in_array("Editor", json_decode($story->stories_section, true)) ) {
-            array_push($arr, $story);
+
+        if( $story->stories_section != null &&  $story->stories_section != "" && is_string($storiesSection)){
+          $zoe = json_decode($story->stories_section, true);
+          $cow = json_decode($zoe, true);
+          if(in_array("Editor", $cow)){
+         array_push($arr, $story);
+          }
+        }else if(is_array($storiesSection) && in_array("Editor", json_decode($story->stories_section, true))){
+          array_push($arr, $story);
         }
       }
       $slicedArray = array_slice($arr, 0, 3);
       $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
       return response()->json(["success"=>$uniquecategory],200);
-    //   return  $stories->randomx($stories, 3, "Editor");
     }
 
     public function popular(Stories $stories, Request $request){
     $arr = array();
     $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
     foreach($storiesx as $story){
-      $storiesSection = json_decode($story->stories_section, true);
-      if (is_string($story->stories_section) && $story->stories_section == 'Popular' ) {
-          array_push($arr, $story);
-      } elseif (is_array($storiesSection) && in_array("Popular", json_decode($story->stories_section, true)) ) {
-          array_push($arr, $story);
+    $storiesSection = json_decode($story->stories_section, true);
+
+    if( $story->stories_section != null &&  $story->stories_section != "" && is_string($storiesSection)){
+      $zoe = json_decode($story->stories_section, true);
+      $cow = json_decode($zoe, true);
+      if(in_array("Popular", $cow)){
+     array_push($arr, $story);
       }
+    }else if(is_array($storiesSection) && in_array("Popular", json_decode($story->stories_section, true))){
+      array_push($arr, $story);
+    }
     }
     $uniquecategory = uniquecategory::collection($arr)->resolve();
     $ans = intval($request->get('number'));
@@ -94,8 +113,9 @@ class GetController extends Controller
 
     }
 
-    public function randomstories(Stories $stories){
-     $storyx =   $stories->inRandomOrder()->limit(6)->get();
+    public function randomstories(Stories $stories, Request $request){
+        $id = $request->get('id');
+     $storyx =   $stories->where([ ['id', '!=', $id] ])->orderBy('created_at', 'desc')->inRandomOrder()->limit(2)->get();
      $uniquecategory = uniquecategory::collection($storyx)->resolve();
      return response()->json(['success'=>$uniquecategory],200);
     }
@@ -169,7 +189,7 @@ class GetController extends Controller
 
     public function categoryfilter(Request $request){
     $category =optional(category::where('name', $request->get('category'))->first())->id??"";
-    $story = Stories::where(['category_id'=>$category])->get();
+    $story = Stories::where(['category_id'=>$category])->orderBy('created_at', 'desc')->get();
     $uniquecategory =  uniquecategory::collection($story)->resolve();
     $ans = intval($request->get('number'));
     $pagdata =  $this->paginate($uniquecategory, 8, $ans);

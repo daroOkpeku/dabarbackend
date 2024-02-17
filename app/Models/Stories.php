@@ -37,6 +37,7 @@ class Stories extends Model
          'schedule_story_time',
          'status',
          'writer',
-         'category'
+         'category',
+         'created_at'
     ];
 }

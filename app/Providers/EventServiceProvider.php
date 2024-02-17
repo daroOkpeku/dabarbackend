@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Events\emailevent;
+use App\Events\publishstroyevent;
 use App\Events\resetevent;
 use App\Events\roleevent;
 use App\Listeners\emaillistener;
+use App\Listeners\publishstroylistener;
 use App\Listeners\resetlistener;
 use App\Listeners\rolelistener;
 use Illuminate\Auth\Events\Registered;
@@ -33,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
          ],
          resetevent::class=>[
             resetlistener::class,
+         ],
+         publishstroyevent::class =>[
+            publishstroylistener::class,
          ]
     ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\publishstroyevent;
 use App\Http\Requests\change_category;
 use App\Http\Requests\createstoryreq;
 use App\Http\Requests\delete_user_req;
@@ -48,7 +49,7 @@ class PostController extends Controller
         //   $formattedDate = $date_time->format('Y-m-d H:i:s');
            $date_time = Carbon::parse($request->schedule_story_time);
         $formattedDate = $date_time->format('Y-m-d H:i:s');
-            Stories::create([
+           $story = Stories::create([
                 'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
                 'category_id'=>$request->category_id,
@@ -65,6 +66,9 @@ class PostController extends Controller
                 'schedule_story_time'=>$formattedDate,
                 'status'=>$request->status
             ]);
+             if($story->status == 1){
+                event(new publishstroyevent($story->id, $story->heading, ) );
+             }
             return response()->json(['success'=>'you have created a story']);
 
       }
@@ -232,7 +236,7 @@ class PostController extends Controller
         }
 
         public function recentstories(){
-         $story =   Stories::latest()->limit(4)->get();
+         $story =   Stories::orderBy('created_at', 'asc')->limit(4)->get();
          $data = storyresource::collection($story)->resolve();
          return response()->json(['success'=>200, 'message'=>$data]);
         }
@@ -563,7 +567,8 @@ class PostController extends Controller
     $story = Stories::where(['heading'=>$request->heading])->first();
     if($story){
         // $story->body = $request->body;
-        $story->main_image = $request->main_image;
+        //$story->main_image = $request->main_image;
+        $story->created_at = Carbon::parse($request->date);
         $story->status = 1;
         $story->save();
         return response()->json(['success'=>'successful']);
@@ -587,6 +592,7 @@ class PostController extends Controller
             //'no_time_viewed'=>$request->no_time_viewed,
             //'schedule_story_time'=>$formattedDate,
             'status'=>1,
+            $story->created_at = Carbon::parse($request->date)
         ]);
 
         return response()->json(['success'=>'successful']);
