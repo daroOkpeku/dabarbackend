@@ -66,6 +66,7 @@ Route::get("/randomcategory", "randomcategory");
 Route::get("/categoryfilter", "categoryfilter");
 Route::get("/randomstories", "randomstories");
 Route::get("/updatestories", "updatestories");
+Route::get("/randomcategorystrories", "randomcategorystrories");
 });
 
 

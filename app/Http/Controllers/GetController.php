@@ -113,6 +113,19 @@ $storiesSection = json_decode($story->stories_section, true);
 
     }
 
+    public function randomcategorystrories(category $category, Request $request){
+        $uniqueRandomData = $category::distinct()->inRandomOrder()->limit(4)->get();
+        $arr = [];
+        $uniqueRandomData->each(function($item) use (&$arr) {
+            $arr[] = $item->id;
+        });
+        $story =  Stories::whereIn("category_id", $arr)->orderBy('created_at', 'desc')->inRandomOrder()->limit(12)->get();
+         $uniquecategory = uniquecategory::collection($story)->resolve();
+    $ans = intval($request->get('number'));
+    $pagdata =  $this->paginate($uniquecategory, 6, $ans);
+       return response()->json(['success' => $pagdata]);
+    }
+
     public function randomstories(Stories $stories, Request $request){
         $id = $request->get('id');
      $storyx =   $stories->where([ ['id', '!=', $id] ])->orderBy('created_at', 'desc')->inRandomOrder()->limit(2)->get();
