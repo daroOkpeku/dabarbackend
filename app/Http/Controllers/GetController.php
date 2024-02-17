@@ -63,7 +63,7 @@ $storiesSection = json_decode($story->stories_section, true);
     public function editor(Stories $stories){
 
         $arr = array();
-      $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+      $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'desc')->get();
       foreach($storiesx as $story){
         $storiesSection = json_decode($story->stories_section, true);
 
@@ -84,7 +84,7 @@ $storiesSection = json_decode($story->stories_section, true);
 
     public function popular(Stories $stories, Request $request){
     $arr = array();
-    $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+    $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'desc')->get();
     foreach($storiesx as $story){
     $storiesSection = json_decode($story->stories_section, true);
 
