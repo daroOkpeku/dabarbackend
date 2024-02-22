@@ -48,14 +48,23 @@ $storiesSection = json_decode($story->stories_section, true);
         if(in_array("Trending", $cow)){
        array_push($arr, $story);
         }
-      }else if(is_array($storiesSection) && in_array("Trending", json_decode($story->stories_section, true))){
-        array_push($arr, $story);
       }
+
+    if(is_array($storiesSection)){
+       $checksection = json_decode($story->stories_section, true);
+    foreach($checksection as $storysec){
+       if($storysec['value']  == 'Trending'){
+        array_push($arr, $story);
+       }
+    }
+    }
+
+
 
 
     }
     $slicedArray = array_slice($arr, 0, 8);
-    $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
+     $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
 
      return response()->json(["success"=>$uniquecategory],200);
     }
@@ -73,9 +82,17 @@ $storiesSection = json_decode($story->stories_section, true);
           if(in_array("Editor", $cow)){
          array_push($arr, $story);
           }
-        }else if(is_array($storiesSection) && in_array("Editor", json_decode($story->stories_section, true))){
-          array_push($arr, $story);
         }
+
+        if(is_array($storiesSection)){
+            $checksection = json_decode($story->stories_section, true);
+         foreach($checksection as $storysec){
+            if($storysec['value']  == 'Editor'){
+             array_push($arr, $story);
+            }
+         }
+         }
+
       }
       $slicedArray = array_slice($arr, 0, 3);
       $uniquecategory = uniquecategory::collection($slicedArray)->resolve();
@@ -94,9 +111,16 @@ $storiesSection = json_decode($story->stories_section, true);
       if(in_array("Popular", $cow)){
      array_push($arr, $story);
       }
-    }else if(is_array($storiesSection) && in_array("Popular", json_decode($story->stories_section, true))){
-      array_push($arr, $story);
     }
+
+    if(is_array($storiesSection)){
+        $checksection = json_decode($story->stories_section, true);
+     foreach($checksection as $storysec){
+        if($storysec['value']  == 'Popular'){
+         array_push($arr, $story);
+        }
+     }
+     }
     }
     $uniquecategory = uniquecategory::collection($arr)->resolve();
     $ans = intval($request->get('number'));

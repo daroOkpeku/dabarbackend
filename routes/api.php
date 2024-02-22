@@ -48,6 +48,7 @@ Route::controller(PostController::class)->group(function(){
     Route::get("/cryptoapimrk", "cryptoapi");
     Route::post("/subscribe", "subscribe");
     Route::get("/mediadata", "mediadata");
+    Route::delete("/deletemediadata", "deletemediadata");
     Route::post('/stories_from_client', 'stories_from_client');
 
 });

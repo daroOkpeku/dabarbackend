@@ -6,6 +6,7 @@ use App\Events\publishstroyevent;
 use App\Http\Requests\change_category;
 use App\Http\Requests\createstoryreq;
 use App\Http\Requests\delete_user_req;
+use App\Http\Requests\deletemediareq;
 use App\Http\Requests\sectionreq;
 use App\Http\Requests\deletestoryreq;
 use App\Http\Requests\edituser_req;
@@ -235,8 +236,14 @@ class PostController extends Controller
             return response()->json(['success'=>$media]);
         }
 
+        public function deletemediadata(Media $media, deletemediareq $request){
+          $media->find($request->id)->delete();
+          $all = $media->all();
+          return response()->json(['success'=>$all]);
+        }
+
         public function recentstories(){
-         $story =   Stories::orderBy('created_at', 'asc')->limit(4)->get();
+         $story =   Stories::where('status', 1)->orderBy('created_at', 'desc')->limit(4)->get();
          $data = storyresource::collection($story)->resolve();
          return response()->json(['success'=>200, 'message'=>$data]);
         }
@@ -329,7 +336,7 @@ class PostController extends Controller
            }
 
            public function publishedstories(Request $request){
-            $story =   Stories::where(['status'=>1])->get();
+            $story =   Stories::where(['status'=>1])->orderBy('created_at', 'desc')->get();
             $data = storyresource::collection($story)->resolve();
             $ans = intval($request->get('number'));
             $pagdata =  $this->paginate($data , 8, $ans);
@@ -348,7 +355,7 @@ class PostController extends Controller
 
 
         public function unpublishedstories(Request $request){
-            $story =   Stories::where(['status'=>0])->get();
+            $story =   Stories::where(['status'=>0])->orderBy('created_at', 'desc')->get();
             $data = storyresource::collection($story)->resolve();
             $ans = intval($request->get('number'));
             $pagdata =  $this->paginate($data , 8, $ans);
