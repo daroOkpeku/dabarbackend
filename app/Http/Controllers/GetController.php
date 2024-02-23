@@ -10,6 +10,7 @@ use App\Models\popular;
 use App\Models\Stories;
 use App\Models\Subscribe;
 use App\Models\tending;
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -169,15 +170,20 @@ $storiesSection = json_decode($story->stories_section, true);
     }
 
     public function updatestories(){
+
+
+
+
        $stories =   Stories::orderBy('created_at', 'desc')->get();
        $data = array();
        foreach($stories as $story){
-        if($story->status == 1){
-        array_push($data, $story);
-        }else{
-            $todaytime =  CarbonImmutable::now('America/Los_Angeles');
-            $schedule = CarbonImmutable::parse($story->schedule_story_time);
 
+        if($story->status == 1){
+          array_push($data, $story);
+        }else{
+            $todaytime =  Carbon::now('America/Los_Angeles');
+            $schedule = CarbonImmutable::parse($story->schedule_story_time);
+             echo $schedule;
             if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0 && $schedule->diffInMinutes($todaytime) && $schedule->diffInSeconds($todaytime)){
                 $updatestory = Stories::find($story);
                 $updatestory->status = 1;
@@ -194,7 +200,7 @@ $storiesSection = json_decode($story->stories_section, true);
     public function singlestory(Request $request){
         try {
             $story = Stories::find(intval($request->get('id')));
-            $todaytime =  CarbonImmutable::now('America/Los_Angeles');
+            $todaytime =  Carbon::now('America/Los_Angeles');
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
             // $clientIp = $request->header('x-real-ip') ?: $request->ip();
             // $ip = ipadress::where('ip', $clientIp)->first();
@@ -223,6 +229,11 @@ $storiesSection = json_decode($story->stories_section, true);
 
     }
 
+
+    public function psttime(){
+        $todaytime =  Carbon::now('America/Los_Angeles');
+        return response()->json(['success'=>$todaytime]);
+    }
 
     public function categoryfilter(Request $request){
     $category =optional(category::where('name', $request->get('category'))->first())->id??"";
