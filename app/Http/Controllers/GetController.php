@@ -185,7 +185,7 @@ $storiesSection = json_decode($story->stories_section, true);
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
              echo $schedule;
             if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0 && $schedule->diffInMinutes($todaytime) && $schedule->diffInSeconds($todaytime)){
-                $updatestory = Stories::find($story);
+                $updatestory = Stories::find($story->id);
                 $updatestory->status = 1;
                 $updatestory->save();
                 array_push($data, $updatestory);
@@ -232,7 +232,8 @@ $storiesSection = json_decode($story->stories_section, true);
 
     public function psttime(){
         $todaytime =  Carbon::now('America/Los_Angeles');
-        return response()->json(['success'=>$todaytime]);
+        $formattedPSTTime = $todaytime->format('Y-m-d H:i:s');
+        return response()->json(['success'=>$formattedPSTTime]);
     }
 
     public function categoryfilter(Request $request){
