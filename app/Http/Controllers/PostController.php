@@ -88,23 +88,20 @@ class PostController extends Controller
         $date_time = Carbon::parse($request->schedule_story_time);
         $formattedDate = $date_time->format('Y-m-d H:i:s');
            $story = Stories::find($request->id);
-           $story->update([
-                'heading'=>$request->heading,
-                'presummary'=>$request->presummary,
-                'category_id'=>$request->category_id,
-                'writer_id'=>$request->writer_id,
-                'read_time'=>$request->read_time,
-                 'main_image'=>$request->main_image,
-                //  'keypoint'=>$request->keypoint,
-                // 'thumbnail'=>$request->thumbnail,
-                'summary'=>$request->summary,
-                'body'=>$request->body,
-                 "stories_section"=>$request->stories_section,
-                // 'sub_categories_id'=>$request->sub_categories_id,
-                // 'no_time_viewed'=>$request->no_time_viewed,
-                 'schedule_story_time'=>$formattedDate,
-                 'status'=>$request->status
-           ]);
+           $story->fill([
+            'heading' => $request->heading,
+            'presummary' => $request->presummary,
+            'category_id' => $request->category_id,
+            'writer_id' => $request->writer_id,
+            'read_time' => $request->read_time,
+            'main_image' => $request->main_image,
+            'summary' => $request->summary,
+            'body' => $request->body,
+            'stories_section' => $request->stories_section,
+            'schedule_story_time' => $formattedDate,
+            'status' => $request->status,
+        ]);
+          $story->save();
            return response()->json(['success'=>200, 'message'=>"you have edited the article"]);
            } catch (\Throwable $th) {
             return response()->json(['error'=>500, 'message'=>'please select the correct story']);
