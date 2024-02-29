@@ -50,6 +50,7 @@ Route::controller(PostController::class)->group(function(){
     Route::get("/mediadata", "mediadata");
     Route::delete("/deletemediadata", "deletemediadata");
     Route::post('/stories_from_client', 'stories_from_client');
+    // Route::post("/editstory", "editstory");
 
 });
 
@@ -116,7 +117,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/storydatalist", "storydatalist");
         Route::post("/createstory", "createstory");
         Route::get("/storyedit/{id}", "storyedit");
-        Route::put("/editstory", "editstory");
+        Route::post("/editstory", "editstory");
         Route::post("/deletesinglestory", "deletesinglestory");
         Route::get("/uploadauth", "uploadauth");
         Route::get('/publishedstories', 'publishedstories');

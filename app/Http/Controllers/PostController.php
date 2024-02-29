@@ -70,7 +70,7 @@ class PostController extends Controller
              if($story->status == 1){
                 event(new publishstroyevent($story->id, $story->heading, ) );
              }
-            return response()->json(['success'=>'you have created a story']);
+            return response()->json(['success'=>'you have created a story', 'date'=>$story->schedule_story_time]);
 
       }
 
@@ -102,7 +102,7 @@ class PostController extends Controller
             'status' => $request->status,
         ]);
           $story->save();
-           return response()->json(['success'=>200, 'message'=>"you have edited the article"]);
+           return response()->json(['success'=>200, 'message'=>"you have edited the article", 'date'=>$story->schedule_story_time]);
            } catch (\Throwable $th) {
             return response()->json(['error'=>500, 'message'=>'please select the correct story']);
            }
