@@ -183,7 +183,12 @@ $storiesSection = json_decode($story->stories_section, true);
         }else{
             $todaytime =  Carbon::now('America/Los_Angeles');
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
-            if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0 && $schedule->diffInMinutes($todaytime) && $schedule->diffInSeconds($todaytime)){
+            if($schedule->diffInDays($todaytime) == 0 &&  $schedule->diffInHours($todaytime) == 0 && $schedule->diffInMinutes($todaytime) == 0 && $schedule->diffInSeconds($todaytime) == 0){
+                $updatestory = Stories::find($story->id);
+                $updatestory->status = 1;
+                $updatestory->save();
+                array_push($data, $updatestory);
+            }elseif($todaytime->greaterThanOrEqualTo($schedule)){
                 $updatestory = Stories::find($story->id);
                 $updatestory->status = 1;
                 $updatestory->save();
