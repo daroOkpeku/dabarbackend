@@ -570,38 +570,61 @@ class PostController extends Controller
     public function stories_from_client(Request $request){
     $story = Stories::where(['heading'=>$request->heading])->first();
     if($story){
-        // $story->body = $request->body;
-        //$story->main_image = $request->main_image;
-        $story->created_at = Carbon::parse($request->date);
-        $story->status = 1;
+        // $date =  Carbon::parse($request->date);
+
+         $story->body = $request->body;
+        $story->main_image = $request->main_image;
+       // $story->created_at = $date;
+        //$story->status = 1;
         $story->save();
-        return response()->json(['success'=>'successful']);
+        // return response()->json(['success'=>'successful']);
     }else{
-
-        Stories::create([
-            'heading'=>$request->heading,
-            'presummary'=>$request->presummary,
-            // 'category_id'=>$request->category_id,
-            // 'writer_id'=>$request->writer_id,
-            'read_time'=>$request->read_time,
-            'main_image'=>$request->main_image,
-            // 'keypoint'=>$request->keypoint,
-            // 'thumbnail'=>$request->thumbnail,
-            'summary'=>$request->summary,
-            'body'=>$request->body,
-            'writer'=>$request->writer,
-            'category'=>$request->category,
-            //"stories_section"=>$request->stories_section,
-            //'sub_categories_id'=>$request->sub_categories_id,
-            //'no_time_viewed'=>$request->no_time_viewed,
-            //'schedule_story_time'=>$formattedDate,
-            'status'=>1,
-            $story->created_at = Carbon::parse($request->date)
-        ]);
-
+        // $date =  Carbon::parse($request->date);
+        //     $story = new  Stories();
+        //     $story->heading = $request->heading;
+        //     $story->presummary = $request->presummary;
+        //     // 'category_id'=>$request->category_id,
+        //     // 'writer_id'=>$request->writer_id,
+        //     $story->read_time = $request->read_time;
+        //     $story->main_image = $request->main_image;
+        //     // 'keypoint'=>$request->keypoint,
+        //     // 'thumbnail'=>$request->thumbnail,
+        //     $story->summary = $request->summary;
+        //    $story->body = $request->body;
+        //    $story->writer = $request->writer;
+        //    $story->category = $request->category;
+        //     //"stories_section"=>$request->stories_section,
+        //     //'sub_categories_id'=>$request->sub_categories_id,
+        //     //'no_time_viewed'=>$request->no_time_viewed,
+        //     //'schedule_story_time'=>$formattedDate,
+        //     $story->status = 1;
+        //     $story->created_at = $date;
+        //      $story->save();
         return response()->json(['success'=>'successful']);
 
     }
+
+    }
+
+    public function story_empty_id(){
+
+        $stories =   Stories::all();
+        $count = count($stories);
+        for ($i = 0; $i < $count; $i++) {
+            $story = $stories[$i];
+         if(empty($story->category_id) && empty($story->writer_id)){
+                $category = category::where("name", $story->category)->first();
+                $writer = writer::where("name", $story->writer)->first();
+                if($category && $writer){
+                    $story->category_id = $category->id;
+                    $story->writer_id = $writer->id;
+                    $story->save();
+
+                }
+        }
+     }
+     return response()->json(["success"=>"successful"]);
+
 
     }
 

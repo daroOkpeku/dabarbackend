@@ -51,6 +51,7 @@ Route::controller(PostController::class)->group(function(){
     Route::delete("/deletemediadata", "deletemediadata");
     Route::post('/stories_from_client', 'stories_from_client');
     // Route::post("/editstory", "editstory");
+    Route::get("/story_empty_id", "story_empty_id");
 
 });
 
