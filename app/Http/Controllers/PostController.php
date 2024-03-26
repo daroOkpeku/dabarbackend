@@ -579,27 +579,27 @@ class PostController extends Controller
         $story->save();
         // return response()->json(['success'=>'successful']);
     }else{
-        // $date =  Carbon::parse($request->date);
-        //     $story = new  Stories();
-        //     $story->heading = $request->heading;
-        //     $story->presummary = $request->presummary;
-        //     // 'category_id'=>$request->category_id,
-        //     // 'writer_id'=>$request->writer_id,
-        //     $story->read_time = $request->read_time;
-        //     $story->main_image = $request->main_image;
-        //     // 'keypoint'=>$request->keypoint,
-        //     // 'thumbnail'=>$request->thumbnail,
-        //     $story->summary = $request->summary;
-        //    $story->body = $request->body;
-        //    $story->writer = $request->writer;
-        //    $story->category = $request->category;
-        //     //"stories_section"=>$request->stories_section,
-        //     //'sub_categories_id'=>$request->sub_categories_id,
-        //     //'no_time_viewed'=>$request->no_time_viewed,
-        //     //'schedule_story_time'=>$formattedDate,
-        //     $story->status = 1;
-        //     $story->created_at = $date;
-        //      $story->save();
+        $date =  Carbon::parse($request->date);
+            $story = new  Stories();
+            $story->heading = $request->heading;
+            $story->presummary = $request->presummary;
+            // 'category_id'=>$request->category_id,
+            // 'writer_id'=>$request->writer_id,
+            $story->read_time = $request->read_time;
+            $story->main_image = $request->main_image;
+            // 'keypoint'=>$request->keypoint,
+            // 'thumbnail'=>$request->thumbnail,
+            $story->summary = $request->summary;
+           $story->body = $request->body;
+           $story->writer = $request->writer;
+           $story->category = $request->category;
+            //"stories_section"=>$request->stories_section,
+            //'sub_categories_id'=>$request->sub_categories_id,
+            //'no_time_viewed'=>$request->no_time_viewed,
+            //'schedule_story_time'=>$formattedDate,
+            $story->status = 1;
+            $story->created_at = $date;
+             $story->save();
         return response()->json(['success'=>'successful']);
 
     }
