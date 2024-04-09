@@ -38,7 +38,7 @@ class GetController extends Controller
     public function  tending(Stories $stories){
     // return  $stories->randomx($stories, 8, 'Trending');
     $arr = array();
-     $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'asc')->get();
+     $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'desc')->get();
 
     foreach($storiesx as $story){
 $storiesSection = json_decode($story->stories_section, true);
