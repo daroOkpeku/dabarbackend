@@ -73,7 +73,8 @@ $storiesSection = json_decode($story->stories_section, true);
     public function editor(Stories $stories){
 
         $arr = array();
-      $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'desc')->get();
+      // $storiesx =  $stories->where('status', 1)->orderBy('created_at', 'desc')->get();
+      $storiesx = $stories->whereIn('status', [1, '1'])->orderBy('created_at', 'desc')->get();
       foreach($storiesx as $story){
         $storiesSection = json_decode($story->stories_section, true);
 
@@ -102,7 +103,7 @@ $storiesSection = json_decode($story->stories_section, true);
 
     public function popular(Stories $stories, Request $request){
     $arr = array();
-    $storiesx =  $stories->where(['status'=>1])->orderBy('created_at', 'desc')->get();
+    $storiesx =  $stories->whereIn('status', [1, '1'])->orderBy('created_at', 'desc')->get();
     foreach($storiesx as $story){
     $storiesSection = json_decode($story->stories_section, true);
 
@@ -132,7 +133,7 @@ $storiesSection = json_decode($story->stories_section, true);
     public function randomcategory(Stories $stories){
         // $uni = Stories::orderBy('created_at', 'desc')->pluck('category_id');
         // whereIn('category_id', $uni)
-        $stories = Stories::where('status', 1)->orderBy('created_at', 'desc')->limit(4)->get();
+        $stories = Stories::whereIn('status', [1, '1'])->orderBy('created_at', 'desc')->limit(4)->get();
          $uniquecategory = uniquecategory::collection($stories)->resolve();
         return response()->json(['success' => $uniquecategory]);
 
@@ -178,7 +179,7 @@ $storiesSection = json_decode($story->stories_section, true);
        $data = array();
        foreach($stories as $story){
 
-        if($story->status == 1){
+        if($story->status == 1 || $story->status == '1'){
           array_push($data, $story);
         }else{
             $todaytime =  Carbon::now('America/Los_Angeles');
@@ -208,7 +209,7 @@ $storiesSection = json_decode($story->stories_section, true);
             $schedule = CarbonImmutable::parse($story->schedule_story_time);
             // $clientIp = $request->header('x-real-ip') ?: $request->ip();
             // $ip = ipadress::where('ip', $clientIp)->first();
-            if($story->status == 1){
+            if($story->status == 1 || $story->status == '1'){
               $ans = $story->no_time_viewed + 1;
               $story->no_time_viewed =  $ans;
                $story->save();

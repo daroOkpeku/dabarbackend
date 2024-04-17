@@ -30,7 +30,9 @@ class trackstroies extends Command
 
 
         $todaytime = Carbon::now('America/Los_Angeles');
-        Stories::where(['status'=>0])->where('schedule_story_time', '<', $todaytime) ->update(['status' => 1]);
+        // Stories::whereIn('status', [0, '0'])->where('schedule_story_time', '<', $todaytime) ->update(['status' => 1]);
+        Stories::whereIn('status', [0, '0'])->where('schedule_story_time', '<', $todaytime)->update(['status' => 1]);
+
 
 
 

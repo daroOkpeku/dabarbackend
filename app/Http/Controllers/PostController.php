@@ -333,7 +333,8 @@ class PostController extends Controller
            }
 
            public function publishedstories(Request $request){
-            $story =   Stories::where(['status'=>1])->orderBy('created_at', 'desc')->get();
+
+            $story =   Stories::whereIn('status', [1, '1'])->orderBy('created_at', 'desc')->get();
             $data = storyresource::collection($story)->resolve();
             $ans = intval($request->get('number'));
             $pagdata =  $this->paginate($data , 8, $ans);
@@ -343,7 +344,7 @@ class PostController extends Controller
            public function searchpublishedstories(Request $request){
             $search = $request->get("search");
             $ans = intval($request->get('number'));
-            $serchstories =  Stories::where(['status'=>1])->search($search)->take(5)->get();
+            $serchstories =  Stories::whereIn('status', [1, '1'])->search($search)->take(5)->get();
             $data = storyresource::collection($serchstories)->resolve();
             $pagdata =  $this->paginate($data , 8, $ans);
 
@@ -352,7 +353,8 @@ class PostController extends Controller
 
 
         public function unpublishedstories(Request $request){
-            $story =   Stories::where(['status'=>0])->orderBy('created_at', 'desc')->get();
+
+            $story =   Stories::whereIn('status', [0, '0'])->orderBy('created_at', 'desc')->get();
             $data = storyresource::collection($story)->resolve();
             $ans = intval($request->get('number'));
             $pagdata =  $this->paginate($data , 8, $ans);
@@ -362,7 +364,7 @@ class PostController extends Controller
            public function searchunpublishedstories(Request $request){
             $search = $request->get("search");
             $ans = intval($request->get('number'));
-            $serchstories =  Stories::where(['status'=>0])->search($search)->take(5)->get();
+            $serchstories =  Stories::whereIn('status', [0, '0'])->search($search)->take(5)->get();
             $data = storyresource::collection($serchstories)->resolve();
             $pagdata =  $this->paginate($data , 8, $ans);
 
