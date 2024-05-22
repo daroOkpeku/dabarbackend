@@ -15,6 +15,8 @@ use App\Http\Requests\profilecreatereq;
 use App\Http\Requests\profileupdatereq;
 use App\Http\Requests\storyidreq;
 use App\Http\Requests\subscribereq;
+use App\Http\Requests\videoeditreq;
+use App\Http\Requests\videoreq;
 use App\Http\Requests\writer_req;
 use App\Http\Resources\dashbordresource;
 use App\Http\Resources\storyresource;
@@ -40,6 +42,8 @@ use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use ImageKit\ImageKit;
 use App\Models\stories_sections;
+use App\Models\videos;
+
 class PostController extends Controller
 {
 
@@ -313,8 +317,15 @@ class PostController extends Controller
          }
 
          public function deletesinglestory(deletestoryreq $request, Stories $story){
-            $story->where(['id'=>$request->id])->delete();
+              $number = intval($request->id);
+             $story = Stories::find($number)->delete();
             return response()->json(['message'=>'This story has been deleted'],200);
+         }
+
+         public function deletecatagory(deletestoryreq $request,){
+             $number = intval($request->id);
+             category::find($number)->delete();
+              return response()->json(['message'=>'This category has been deleted'],200);
          }
 
          public function logout(){
@@ -672,5 +683,39 @@ class PostController extends Controller
         return response()->json(['error'=>'you do not have access to this api'],500);
     }
    }
+
+   public function videocreate(videoreq $request){
+     videos::create([
+        "title"=>$request->title,
+        "url"=>$request->url,
+        "file"=>$request->file,
+        "category"=>$request->category,
+        "writername"=>$request->writername,
+     ]);
+     return response()->json(["success"=>"your video has been accepted"]);
+   }
+
+       public function deletevideo(deletemediareq $request){
+        $number = intval($request->id);
+        videos::find($number)->delete();
+        return response()->json(['success'=>200, 'message'=>'you have delete the video']);
+     }
+
+     public function updatevideo(videoeditreq $request){
+        $video = videos::find($request->id);
+        if($video){
+        $video->title = $request->title;
+         $video->url = $request->url;
+        $video->file = $request->file;
+        $video->category = $request->category;
+        $video->writername = $request->writername;
+        $video->save();
+        return response()->json(["success"=>"you have updated the video"]);
+        }else{
+            return response()->json(["error"=>"this video does not exist"]);
+        }
+     }
+
+
 
 }

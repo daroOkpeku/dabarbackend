@@ -71,6 +71,7 @@ Route::get("/randomstories", "randomstories");
 Route::get("/updatestories", "updatestories");
 Route::get("/randomcategorystrories", "randomcategorystrories");
 Route::get("/psttime", "psttime");
+Route::get("/uservideos", "uservideos")->where("number", "integer");
 });
 
 
@@ -119,7 +120,8 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::post("/createstory", "createstory");
         Route::get("/storyedit/{id}", "storyedit");
         Route::post("/editstory", "editstory");
-        Route::post("/deletesinglestory", "deletesinglestory");
+        Route::delete("/deletesinglestory", "deletesinglestory");
+        Route::delete("/deletecatagory", "deletecatagory");
         Route::get("/uploadauth", "uploadauth");
         Route::get('/publishedstories', 'publishedstories');
         Route::get("/searchpublishedstories", "searchpublishedstories");
@@ -143,6 +145,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::put("/change_category", "change_category");
         Route::get("/allcategory", "allcategory");
         Route::get('/logout', 'logout');
+        Route::post('/videocreate', 'videocreate');
+        Route::delete("/deletevideo", "deletevideo");
+        Route::put("/updatevideo", "updatevideo");
        });
 
 
@@ -161,6 +166,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get("/allsubscribe", "allsubscribe");
         Route::get("/downloadsubscribe", "downloadsubscribe");
         Route::get("/searchsubsribe", "searchsubsribe");
+        Route::get("/adminvideos", "adminvideos")->where("number", "integer");
     });
 
    });

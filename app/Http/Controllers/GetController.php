@@ -10,6 +10,7 @@ use App\Models\popular;
 use App\Models\Stories;
 use App\Models\Subscribe;
 use App\Models\tending;
+use App\Models\videos;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -296,4 +297,18 @@ $storiesSection = json_decode($story->stories_section, true);
             return response()->json(['success'=>$serchstories]);
         }
 
+        public function adminvideos(Request $request){
+           $videos =  videos::all()->toArray();
+           $ans = intval($request->get('number'));
+           $pagdata =  $this->paginate($videos, 8, $ans);
+           return response()->json(['success'=>200, 'message'=>$pagdata]);
+        }
+
+
+        public function uservideos(Request $request){
+            $videos =  videos::all()->toArray();
+            $ans = intval($request->get('number'));
+            $pagdata =  $this->paginate($videos, 5, $ans);
+            return response()->json(['success'=>200, 'message'=>$pagdata]);
+         }
 }

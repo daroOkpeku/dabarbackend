@@ -142,7 +142,7 @@
 <tr>
 <td class="pad" style="padding-left:30px;padding-right:30px;padding-top:10px;">
 <div style="color:#2f2f2f;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:16px;line-height:150%;text-align:center;mso-line-height-alt:24px;">
-<p style="margin: 0; word-break: break-word;"><span>Hi <strong><u>{{ $fullname }}</u></strong>,</span></p>
+<p style="margin: 0; word-break: break-word;"><span>Hi <strong><u><?php echo e($fullname); ?></u></strong>,</span></p>
 </div>
 </td>
 </tr>
@@ -160,7 +160,7 @@
 <tr>
 <td class="pad" style="padding-left:30px;padding-right:30px;">
 <div style="color:#2f2f2f;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:16px;line-height:150%;text-align:center;mso-line-height-alt:24px;">
-<p style="margin: 0; word-break: break-word;"><span>a new article has been publish the title of the article is {{ $data['heading'] }}</strong></span></p>
+<p style="margin: 0; word-break: break-word;"><span>a new article has been publish the title of the article is <?php echo e($data['heading']); ?></strong></span></p>
 <!-- <p style="margin: 0; word-break: break-word;"><span>using <strong><span>Bank Account ****9876</span></strong></span></p> -->
 </div>
 </td>
@@ -311,3 +311,4 @@
 </table><!-- End -->
 </body>
 </html>
+<?php /**PATH /home/thednwxr/public_html/dabarbackend/resources/views/mail/editor.blade.php ENDPATH**/ ?>
