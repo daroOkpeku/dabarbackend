@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class createstoryreq extends FormRequest
+class Createstoryreq extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,7 +33,7 @@ class createstoryreq extends FormRequest
              'thumbnail'=>'string|nullable',
              'summary'=>'string|nullable',
              'body'=>'string|nullable',
-             'stories_section'=>'string|nullable',
+             'stories_section'=>'required|string|min:1',
              //'sub_categories_id'=>'regex:/^[0-9 ]*$/',
              //'no_time_viewed'=>'regex:/^[0-9 ]*$/',
            //  'schedule_story_time'=>'date_format:Y-m-d H:i:s|timezone:UTC',

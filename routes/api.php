@@ -52,10 +52,11 @@ Route::controller(PostController::class)->group(function(){
     Route::post('/stories_from_client', 'stories_from_client');
     // Route::post("/editstory", "editstory");
     Route::get("/story_empty_id", "story_empty_id");
+    Route::post("/createstory", "createstory");
 
 });
 
-// Route::get("/cryptoapimrk", [PostController::class, 'cryptoapi']);
+
 // Route::post("/subscribe", [PostController::class, "subscribe"]);
 
 Route::controller(GetController::class)->group(function(){

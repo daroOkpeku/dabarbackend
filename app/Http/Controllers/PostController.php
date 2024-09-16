@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\publishstroyevent;
 use App\Http\Requests\change_category;
-use App\Http\Requests\createstoryreq;
+use App\Http\Requests\Createstoryreq;
 use App\Http\Requests\delete_user_req;
 use App\Http\Requests\deletemediareq;
 use App\Http\Requests\sectionreq;
@@ -47,13 +47,33 @@ use App\Models\videos;
 class PostController extends Controller
 {
 
-      public function createstory(createstoryreq $request){
+      public function createstory(Createstoryreq $request){
             // createstoryreq
         //     $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
         //   $date_time = Carbon::parse($dateWithoutTimezone);
         //   $formattedDate = $date_time->format('Y-m-d H:i:s');
+
            $date_time = Carbon::parse($request->schedule_story_time);
         $formattedDate = $date_time->format('Y-m-d H:i:s');
+
+        $stories_section =   $request->stories_section == "" ? json_encode([
+            [
+                "id" => 1,
+                "value" => "Trending",
+                "label" => "Trending"
+            ],
+            [
+                "id" => 2,
+                "value" => "Editor",
+                "label" => "Editor"
+            ],
+            [
+                "id" => 3,
+                "value" => "Popular",
+                "label" => "Popular"
+            ]
+        ]):$request->stories_section;
+
            $story = Stories::create([
                 'heading'=>$request->heading,
                 'presummary'=>$request->presummary,
@@ -65,7 +85,7 @@ class PostController extends Controller
                 // 'thumbnail'=>$request->thumbnail,
                 'summary'=>$request->summary,
                 'body'=>$request->body,
-                "stories_section"=>$request->stories_section,
+                "stories_section"=>$stories_section,
                 //'sub_categories_id'=>$request->sub_categories_id,
                 //'no_time_viewed'=>$request->no_time_viewed,
                 'schedule_story_time'=>$formattedDate,
@@ -81,7 +101,7 @@ class PostController extends Controller
 
 
 
-      public function editstory(createstoryreq $request){
+      public function editstory(Createstoryreq $request){
         // if(Gate::allows("check-editor", auth()->user())){
             // createstoryreq
 
@@ -89,6 +109,44 @@ class PostController extends Controller
         //     $dateWithoutTimezone = preg_replace('/\s\(.*\)/', '', $request->schedule_story_time);
         //   $date_time = Carbon::parse($dateWithoutTimezone);
         //   $formattedDate = $date_time->format('Y-m-d H:i:s');
+        // $stories_section =   $request->stories_section == "" ||  $request->stories_section == '' ? json_encode([
+        //     [
+        //         "id" => 1,
+        //         "value" => "Trending",
+        //         "label" => "Trending"
+        //     ],
+        //     [
+        //         "id" => 2,
+        //         "value" => "Editor",
+        //         "label" => "Editor"
+        //     ],
+        //     [
+        //         "id" => 3,
+        //         "value" => "Popular",
+        //         "label" => "Popular"
+        //     ]
+        // ]):$request->stories_section;
+
+
+
+        $stories_section =    json_decode($request->stories_section) == "" || count(json_decode($request->stories_section)) == 0 ? json_encode([
+            [
+                "id" => 1,
+                "value" => "Trending",
+                "label" => "Trending"
+            ],
+            [
+                "id" => 2,
+                "value" => "Editor",
+                "label" => "Editor"
+            ],
+            [
+                "id" => 3,
+                "value" => "Popular",
+                "label" => "Popular"
+            ]
+        ]):$request->stories_section;
+
         $date_time = Carbon::parse($request->schedule_story_time);
         $formattedDate = $date_time->format('Y-m-d H:i:s');
            $story = Stories::find($request->id);
@@ -101,7 +159,7 @@ class PostController extends Controller
             'main_image' => $request->main_image,
             'summary' => $request->summary,
             'body' => $request->body,
-            'stories_section' => $request->stories_section,
+            'stories_section' => $stories_section,
             'schedule_story_time' => $formattedDate,
             'status' => $request->status,
         ]);

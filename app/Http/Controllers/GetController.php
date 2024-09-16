@@ -44,6 +44,27 @@ class GetController extends Controller
     foreach($storiesx as $story){
 $storiesSection = json_decode($story->stories_section, true);
 
+    if($story->stories_section == "" || $story->stories_section == ''){
+              $story->stories_section = json_encode([
+                            [
+                                "id" => 1,
+                                "value" => "Trending",
+                                "label" => "Trending"
+                            ],
+                            [
+                                "id" => 2,
+                                "value" => "Editor",
+                                "label" => "Editor"
+                            ],
+                            [
+                                "id" => 3,
+                                "value" => "Popular",
+                                "label" => "Popular"
+                            ]
+                        ]);
+                $story->save();
+        }
+
       if( $story->stories_section != null &&  $story->stories_section != "" && is_string($storiesSection)){
         $zoe = json_decode($story->stories_section, true);
         $cow = json_decode($zoe, true);
@@ -78,11 +99,35 @@ $storiesSection = json_decode($story->stories_section, true);
       $storiesx = $stories->whereIn('status', [1, '1'])->orderBy('created_at', 'desc')->get();
       foreach($storiesx as $story){
         $storiesSection = json_decode($story->stories_section, true);
+        
+        if($story->stories_section == "" || $story->stories_section == ''){
+              $story->stories_section = json_encode([
+                            [
+                                "id" => 1,
+                                "value" => "Trending",
+                                "label" => "Trending"
+                            ],
+                            [
+                                "id" => 2,
+                                "value" => "Editor",
+                                "label" => "Editor"
+                            ],
+                            [
+                                "id" => 3,
+                                "value" => "Popular",
+                                "label" => "Popular"
+                            ]
+                        ]);
+                $story->save();
+        }
 
         if( $story->stories_section != null &&  $story->stories_section != "" && is_string($storiesSection)){
           $zoe = json_decode($story->stories_section, true);
+         
           $cow = json_decode($zoe, true);
+           
           if(in_array("Editor", $cow)){
+            
          array_push($arr, $story);
           }
         }
@@ -107,6 +152,27 @@ $storiesSection = json_decode($story->stories_section, true);
     $storiesx =  $stories->whereIn('status', [1, '1'])->orderBy('created_at', 'desc')->get();
     foreach($storiesx as $story){
     $storiesSection = json_decode($story->stories_section, true);
+    
+    if($story->stories_section == "" || $story->stories_section == ''){
+              $story->stories_section = json_encode([
+                            [
+                                "id" => 1,
+                                "value" => "Trending",
+                                "label" => "Trending"
+                            ],
+                            [
+                                "id" => 2,
+                                "value" => "Editor",
+                                "label" => "Editor"
+                            ],
+                            [
+                                "id" => 3,
+                                "value" => "Popular",
+                                "label" => "Popular"
+                            ]
+                        ]);
+                $story->save();
+        }
 
     if( $story->stories_section != null &&  $story->stories_section != "" && is_string($storiesSection)){
       $zoe = json_decode($story->stories_section, true);
@@ -126,7 +192,7 @@ $storiesSection = json_decode($story->stories_section, true);
      }
     }
     $uniquecategory = uniquecategory::collection($arr)->resolve();
-    $ans = intval($request->get('number'));
+    $ans =  intval($request->get('number'));
     $pagdata =  $this->paginate($uniquecategory, 6, $ans);
     return response()->json(["success"=>$pagdata],200);
     }
@@ -306,7 +372,7 @@ $storiesSection = json_decode($story->stories_section, true);
 
 
         public function uservideos(Request $request){
-            $videos =  videos::all()->toArray();
+            $videos =  videos::orderBy('created_at', 'desc')->get()->toArray();
             $ans = intval($request->get('number'));
             $pagdata =  $this->paginate($videos, 5, $ans);
             return response()->json(['success'=>200, 'message'=>$pagdata]);
