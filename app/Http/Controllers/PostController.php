@@ -743,6 +743,7 @@ class PostController extends Controller
    }
 
    public function videocreate(videoreq $request){
+    if(Gate::allows("check-admin", auth()->user())){
      videos::create([
         "title"=>$request->title,
         "url"=>$request->url,
@@ -751,28 +752,43 @@ class PostController extends Controller
         "writername"=>$request->writername,
      ]);
      return response()->json(["success"=>"your video has been accepted"]);
+    }else{
+        return response()->json(['error'=>'you do not have access to this api'],500);
+    }
    }
 
        public function deletevideo(deletemediareq $request){
+        if(Gate::allows("check-admin", auth()->user())){
+        try {
         $number = intval($request->id);
         videos::find($number)->delete();
         return response()->json(['success'=>200, 'message'=>'you have delete the video']);
-     }
-
-     public function updatevideo(videoeditreq $request){
-        $video = videos::find($request->id);
-        if($video){
-        $video->title = $request->title;
-         $video->url = $request->url;
-        $video->file = $request->file;
-        $video->category = $request->category;
-        $video->writername = $request->writername;
-        $video->save();
-        return response()->json(["success"=>"you have updated the video"]);
-        }else{
+        } catch (\Throwable $th) {
             return response()->json(["error"=>"this video does not exist"]);
         }
+        }else{
+            return response()->json(['error'=>'you do not have access to this api'],500);
+        }
      }
+
+   public function updatevideo(videoeditreq $request){
+   if(Gate::allows("check-admin", auth()->user())){
+   $video = videos::find($request->id);
+   try {
+   $video->title = $request->title;
+   $video->url = $request->url;
+   $video->file = $request->file;
+   $video->category = $request->category;
+   $video->writername = $request->writername;
+   $video->save();
+   return response()->json(["success"=>"you have updated the video"]);
+   } catch (\Throwable $th) {
+   return response()->json(["error"=>"this video does not exist"]);
+   }
+   }else{
+   return response()->json(['error'=>'you do not have access to this api'],500);
+   }
+   }
 
 
 
